@@ -1,0 +1,10 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true,
+    "source.organizeImports": false
+  },
+  "editor.formatOnSave": true,
+  "javascript.format.enable": false,
+  "material-icon-theme.activeIconPack": "react_redux"
+}

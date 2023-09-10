@@ -10,5 +10,8 @@ export const Card = styled.div`
     flex: 1;
     flex-direction: column;
     padding: 30px;
+    @media (max-width: 800px) {
+      padding: 15px;
+    }
   `}
 `

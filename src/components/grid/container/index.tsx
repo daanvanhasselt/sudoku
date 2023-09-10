@@ -7,6 +7,7 @@ export const Container = styled.div`
     align-items: center;
     flex: 1;
     background-color: ${({ theme }) => theme.colors.black};
+    user-select: none;
 
     > :nth-child(3n) {
       margin-bottom: ${theme.border.thick};

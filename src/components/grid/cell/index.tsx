@@ -26,7 +26,7 @@ interface CellProps {
 }
 
 const Cell: FC<CellProps> = ({ colIndex, rowIndex }) => {
-  return <CellDiv>{colIndex}</CellDiv>
+  return <CellDiv>{colIndex + 1}</CellDiv>
 }
 
 export default Cell

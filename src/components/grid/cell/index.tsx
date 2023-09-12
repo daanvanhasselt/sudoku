@@ -82,25 +82,12 @@ const Cell: FC<CellProps> = ({ colIndex, rowIndex }) => {
     dispatch(tickleCell({ col: colIndex as INDEX, row: rowIndex as INDEX }))
   }
 
-  const handleKeDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === 'Backspace' || e.key === 'Delete') {
-      dispatch(setValue(undefined))
-    } else if (e.keyCode >= 49 && e.keyCode <= 57) {
-      dispatch(setValue((e.keyCode - 48) as N))
-    }
-    // do the same for numpad
-    else if (e.keyCode >= 97 && e.keyCode <= 105) {
-      dispatch(setValue((e.keyCode - 96) as N))
-    }
-  }
-
   return (
     <CellDiv
       onContextMenu={(e) => e.preventDefault()}
       selected={cell?.isSelected}
       onPointerDown={handlePointerDown}
       onPointerOver={handlePointerOver}
-      onKeyDown={handleKeDown}
       tabIndex={-1}
       data-tag="cell"
     >

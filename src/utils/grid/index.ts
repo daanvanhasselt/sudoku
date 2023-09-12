@@ -113,6 +113,34 @@ function selectAll(grid?: GRID): GRID | undefined {
   return setSelectionToAllCells(grid, true)
 }
 
+function moveSelection(grid?: GRID, coords?: COORDS): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col, colIndex) =>
+      col.map((cell, rowIndex) => ({
+        ...cell,
+        isSelected: colIndex === coords?.col && rowIndex === coords?.row,
+      }))
+    ) as GRID,
+  })
+}
+
+function expandSelection(grid?: GRID, coords?: COORDS): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col, colIndex) =>
+      col.map((cell, rowIndex) => ({
+        ...cell,
+        isSelected:
+          cell.isSelected ||
+          (colIndex === coords?.col && rowIndex === coords?.row),
+      }))
+    ) as GRID,
+  })
+}
+
 export {
   createEmptyGrid,
   isInCol,
@@ -122,4 +150,6 @@ export {
   setValueToSelectedCells,
   clearSelection,
   selectAll,
+  moveSelection,
+  expandSelection,
 }

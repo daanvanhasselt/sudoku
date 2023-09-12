@@ -1,6 +1,12 @@
 import { ReactNode, FC, useEffect } from 'react'
 import { useDispatch } from 'react-redux'
-import { selectAll, clearSelection, setValue } from 'reducers'
+import {
+  selectAll,
+  clearSelection,
+  setValue,
+  moveSelection,
+  expandSelection,
+} from 'reducers'
 import { N } from 'typings'
 
 import styled, { css } from 'styled-components'
@@ -20,12 +26,15 @@ interface Props {
 const Wrapper: FC<Props> = ({ children }) => {
   const dispatch = useDispatch()
 
-  // useeffect to add keydown listener to root
+  // useeffect to add event listeners to root
   useEffect(() => {
+    // handle keydown
     const handleKeyDown = (e: KeyboardEvent) => {
+      // select all, clear selection
       if (e.ctrlKey && e.key === 'a') return dispatch(selectAll())
       if (e.key === 'Escape') return dispatch(clearSelection())
 
+      // remove or set value for cell
       if (e.key === 'Backspace' || e.key === 'Delete') {
         dispatch(setValue(undefined))
       } else if (e.keyCode >= 49 && e.keyCode <= 57) {
@@ -35,8 +44,24 @@ const Wrapper: FC<Props> = ({ children }) => {
       else if (e.keyCode >= 97 && e.keyCode <= 105) {
         dispatch(setValue((e.keyCode - 96) as N))
       }
+
+      // handle arrow keys
+      if (e.key === 'ArrowUp') {
+        if (e.ctrlKey || e.shiftKey) return dispatch(expandSelection('up'))
+        else dispatch(moveSelection('up'))
+      } else if (e.key === 'ArrowDown') {
+        if (e.ctrlKey || e.shiftKey) return dispatch(expandSelection('down'))
+        else dispatch(moveSelection('down'))
+      } else if (e.key === 'ArrowLeft') {
+        if (e.ctrlKey || e.shiftKey) return dispatch(expandSelection('left'))
+        else dispatch(moveSelection('left'))
+      } else if (e.key === 'ArrowRight') {
+        if (e.ctrlKey || e.shiftKey) return dispatch(expandSelection('right'))
+        else dispatch(moveSelection('right'))
+      }
     }
 
+    // handle click outside of grid
     const handleClick = (e: MouseEvent) => {
       if (e.target instanceof HTMLDivElement) {
         if (

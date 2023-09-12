@@ -7,7 +7,10 @@ import {
   clearSelection,
   selectAll,
   setValueToSelectedCells,
+  moveSelection,
+  expandSelection,
 } from 'utils'
+import { addDirectionToCoords } from 'typings'
 
 const initialState: IReducer = {}
 
@@ -27,6 +30,7 @@ function reducer(state = initialState, action: AnyAction) {
       return {
         ...state,
         grid: tickleCell(action.coords, state.selectionMode, state.grid),
+        lastTickledCell: action.coords,
       }
     case types.SET_VALUE:
       return {
@@ -43,6 +47,22 @@ function reducer(state = initialState, action: AnyAction) {
         ...state,
         grid: selectAll(state.grid),
       }
+    case types.MOVE_SELECTION: {
+      const coords = addDirectionToCoords(state.lastTickledCell, action.dir)
+      return {
+        ...state,
+        grid: moveSelection(state.grid, coords),
+        lastTickledCell: coords,
+      }
+    }
+    case types.EXPAND_SELECTION: {
+      const coords = addDirectionToCoords(state.lastTickledCell, action.dir)
+      return {
+        ...state,
+        grid: expandSelection(state.grid, coords),
+        lastTickledCell: coords,
+      }
+    }
     default:
       return state
   }

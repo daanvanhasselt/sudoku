@@ -1,6 +1,6 @@
 import { Action, AnyAction } from 'redux'
 import * as types from './types'
-import { N, COORDS } from 'typings'
+import { N, COORDS, DIRECTION } from 'typings'
 
 export const createGrid = (): Action => {
   return { type: types.CREATE_GRID }
@@ -16,6 +16,14 @@ export const clearSelection = (): Action => {
 
 export const selectAll = (): Action => {
   return { type: types.SELECT_ALL }
+}
+
+export const moveSelection = (dir: DIRECTION): AnyAction => {
+  return { type: types.MOVE_SELECTION, dir }
+}
+
+export const expandSelection = (dir: DIRECTION): AnyAction => {
+  return { type: types.EXPAND_SELECTION, dir }
 }
 
 export const tickleCell = (coords: COORDS): AnyAction => {

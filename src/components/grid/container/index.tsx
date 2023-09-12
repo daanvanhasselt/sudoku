@@ -8,6 +8,7 @@ export const Container = styled.div`
     flex: 1;
     background-color: ${({ theme }) => theme.colors.black};
     user-select: none;
+    touch-action: none;
 
     > :nth-child(3n) {
       margin-bottom: ${theme.border.thick};

@@ -1,1 +1,6 @@
 export const CREATE_GRID = 'CREATE_GRID'
+export const SET_SELECTION_MODE = 'SET_SELECTION_MODE'
+export const CLEAR_SELECTION = 'CLEAR_SELECTION'
+export const SELECT_ALL = 'SELECT_ALL'
+export const TICKLE_CELL = 'TICKLE_CELL'
+export const SET_VALUE = 'SET_VALUE'

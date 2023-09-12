@@ -16,7 +16,7 @@ root.render(
       <Provider store={store}>
         <Wrapper data-tag="wrapper">
           <Content data-tag="content">
-            <Card>
+            <Card data-tag="card">
               <Grid />
             </Card>
           </Content>

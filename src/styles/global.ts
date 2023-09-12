@@ -4,6 +4,11 @@ export default createGlobalStyle`
     ${({ theme }) => css`
       html {
         height: 100%;
+        overscroll-behavior: none;
+
+        :focus {
+          outline: none;
+        }
 
         body {
           display: flex;

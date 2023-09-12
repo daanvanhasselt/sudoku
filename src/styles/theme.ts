@@ -5,10 +5,16 @@ const theme = {
     blue: '#a0e9fd',
     lightBlue: '#caf3fe',
     white: '#fff',
+    grid: {
+      cell: {
+        normal: '#fff',
+        selected: 'rgb(255, 255, 176)',
+      },
+    },
   },
   transition: '0.15s',
   border: {
-    thin: '0.5px',
+    thin: '1px',
     medium: '3px',
     thick: '5px',
   },

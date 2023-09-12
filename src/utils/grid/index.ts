@@ -1,17 +1,13 @@
-import { GRID, ROW, CELL, N } from 'typings'
+import { GRID, COORDS, ROW, CELL, N } from 'typings'
+import update from 'immutability-helper'
 
 function createEmptyGrid(): GRID {
-  const grid: GRID = [
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-    [{}, {}, {}, {}, {}, {}, {}, {}, {}],
-  ]
+  const grid = Array.from({ length: 9 }).map<ROW>(
+    () =>
+      Array.from({ length: 9 }).map<CELL>(() => ({
+        isSelected: false,
+      })) as ROW
+  ) as GRID
 
   return grid
 }
@@ -63,4 +59,67 @@ function isInBlock({ grid, col, row, value }: IBlockInput): boolean {
   return false
 }
 
-export { createEmptyGrid, isInCol, isInRow, isInBlock }
+function tickleCell(
+  coords: COORDS,
+  selectionMode?: boolean,
+  grid?: GRID
+): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    [coords.col]: { [coords.row]: { isSelected: { $set: selectionMode } } },
+  })
+}
+
+function setValueToSelectedCells(value?: N, grid?: GRID): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) => {
+        if (cell.isSelected) {
+          return {
+            ...cell,
+            value,
+          }
+        }
+        return cell
+      })
+    ) as GRID,
+  })
+}
+
+function setSelectionToAllCells(
+  grid?: GRID,
+  selected?: boolean
+): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) => ({
+        ...cell,
+        isSelected: selected,
+      }))
+    ) as GRID,
+  })
+}
+
+function clearSelection(grid?: GRID): GRID | undefined {
+  return setSelectionToAllCells(grid, false)
+}
+
+function selectAll(grid?: GRID): GRID | undefined {
+  return setSelectionToAllCells(grid, true)
+}
+
+export {
+  createEmptyGrid,
+  isInCol,
+  isInRow,
+  isInBlock,
+  tickleCell,
+  setValueToSelectedCells,
+  clearSelection,
+  selectAll,
+}

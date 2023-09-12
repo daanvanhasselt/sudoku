@@ -6,7 +6,6 @@ import {
   setSelectionMode,
   tickleCell,
   clearSelection,
-  setValue,
 } from 'reducers'
 import { N, INDEX } from 'typings'
 
@@ -24,14 +23,15 @@ const CellDiv = styled.div<IProps>`
     flex: 1 0 0;
     align-items: center;
     justify-content: center;
+    font-weight: normal;
+    &.initial {
+      font-weight: bold;
+    }
     background-color: ${selected
       ? theme.colors.grid.cell.selected
       : theme.colors.grid.cell.normal};
     font-size: ${theme.font.sizes.cell.large};
-    @media (max-width: 650px) {
-      font-size: ${theme.font.sizes.cell.medium};
-    }
-    @media (max-width: 450px) {
+    @media (max-width: 500px) {
       font-size: ${theme.font.sizes.cell.small};
     }
 
@@ -84,8 +84,9 @@ const Cell: FC<CellProps> = ({ colIndex, rowIndex }) => {
 
   return (
     <CellDiv
-      onContextMenu={(e) => e.preventDefault()}
       selected={cell?.isSelected}
+      className={cell?.isInitial ? 'initial' : ''}
+      onContextMenu={(e) => e.preventDefault()}
       onPointerDown={handlePointerDown}
       onPointerOver={handlePointerOver}
       tabIndex={0}

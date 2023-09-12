@@ -33,3 +33,7 @@ export const tickleCell = (coords: COORDS): AnyAction => {
 export const setValue = (value?: N): AnyAction => {
   return { type: types.SET_VALUE, value }
 }
+
+export const toggleSettingMode = (): Action => {
+  return { type: types.TOGGLE_SETTING_MODE }
+}

@@ -22,7 +22,6 @@ const theme = {
     sizes: {
       cell: {
         large: '2rem',
-        medium: '1.5rem',
         small: '1rem',
       },
     },

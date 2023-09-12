@@ -10,14 +10,14 @@ export const Row = styled.div`
 
     :nth-child(3n) {
       margin-right: ${theme.border.thick};
-      @media (max-width: 650px) {
+      @media (max-width: 500px) {
         margin-right: ${theme.border.medium};
       }
     }
 
     :nth-child(1) {
       margin-left: ${theme.border.thick};
-      @media (max-width: 650px) {
+      @media (max-width: 500px) {
         margin-left: ${theme.border.medium};
       }
     }

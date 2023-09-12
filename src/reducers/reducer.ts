@@ -35,7 +35,11 @@ function reducer(state = initialState, action: AnyAction) {
     case types.SET_VALUE:
       return {
         ...state,
-        grid: setValueToSelectedCells(action.value, state.grid),
+        grid: setValueToSelectedCells(
+          action.value,
+          state.grid,
+          state.settingMode
+        ),
       }
     case types.CLEAR_SELECTION:
       return {
@@ -64,6 +68,12 @@ function reducer(state = initialState, action: AnyAction) {
         lastTickledCell: coords,
       }
     }
+    case types.TOGGLE_SETTING_MODE:
+      return {
+        ...state,
+        settingMode: state.settingMode === true ? false : true,
+      }
+
     default:
       return state
   }

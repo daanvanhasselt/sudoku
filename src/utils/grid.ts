@@ -6,6 +6,7 @@ function createEmptyGrid(): GRID {
     () =>
       Array.from({ length: 9 }).map<CELL>(() => ({
         isSelected: false,
+        isInitial: false,
       })) as ROW
   ) as GRID
 
@@ -71,16 +72,26 @@ function tickleCell(
   })
 }
 
-function setValueToSelectedCells(value?: N, grid?: GRID): GRID | undefined {
+function setValueToSelectedCells(
+  value?: N,
+  grid?: GRID,
+  settingModeActive: boolean = false
+): GRID | undefined {
   if (!grid) return createEmptyGrid()
 
   return update(grid, {
     $set: grid.map((col) =>
       col.map((cell) => {
-        if (cell.isSelected) {
+        if (
+          cell.isSelected &&
+          (!cell.isInitial ||
+            settingModeActive ||
+            (settingModeActive && !value))
+        ) {
           return {
             ...cell,
             value,
+            isInitial: settingModeActive && value ? true : false,
           }
         }
         return cell

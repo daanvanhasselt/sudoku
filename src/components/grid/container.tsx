@@ -12,14 +12,14 @@ export const Container = styled.div`
 
     > :nth-child(3n) {
       margin-bottom: ${theme.border.thick};
-      @media (max-width: 650px) {
+      @media (max-width: 500px), (max-height: 500px) {
         margin-bottom: ${theme.border.medium};
       }
     }
 
     > :nth-child(1) {
       margin-top: ${theme.border.thick};
-      @media (max-width: 650px) {
+      @media (max-width: 500px), (max-height: 500px) {
         margin-top: ${theme.border.medium};
       }
     }

@@ -4,7 +4,16 @@ import { Provider } from 'react-redux'
 import { register, configureStore } from 'core'
 import { GlobalStyles, theme } from 'styles'
 import { ThemeProvider } from 'styled-components'
-import { Wrapper, Content, Card, Grid, Title, Controls } from 'components'
+import {
+  Wrapper,
+  Content,
+  Card,
+  Grid,
+  Header,
+  Title,
+  Controls,
+  SettingModeSwitch,
+} from 'components'
 
 const store = configureStore({})
 
@@ -15,13 +24,18 @@ root.render(
       <GlobalStyles />
       <Provider store={store}>
         <Wrapper data-tag="wrapper">
+          <Header data-tag="header">
+            <Title>
+              Sudoku
+              <SettingModeSwitch />
+            </Title>
+          </Header>
           <Content data-tag="content">
             <Card data-tag="card">
-              {/* <Title>Sudoku</Title> */}
               <Grid />
             </Card>
-            <Controls />
           </Content>
+          <Controls />
         </Wrapper>
       </Provider>
     </ThemeProvider>

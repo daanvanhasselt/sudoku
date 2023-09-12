@@ -1,5 +1,7 @@
 export * from './content'
+export * from './header'
 export * from './title'
 export * from './card'
 export { default as Wrapper } from './wrapper'
 export { default as Controls } from './controls'
+export { default as SettingModeSwitch } from './setting-mode-switch'

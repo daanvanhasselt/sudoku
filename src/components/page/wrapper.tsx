@@ -16,6 +16,7 @@ const WrapperDiv = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: baseline;
+    align-items: center;
   `}
 `
 

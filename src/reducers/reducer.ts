@@ -41,6 +41,7 @@ function reducer(state = initialState, action: AnyAction) {
       return {
         ...state,
         grid: clearSelection(state.grid),
+        lastTickledCell: undefined,
       }
     case types.SELECT_ALL:
       return {

@@ -88,7 +88,7 @@ const Cell: FC<CellProps> = ({ colIndex, rowIndex }) => {
       selected={cell?.isSelected}
       onPointerDown={handlePointerDown}
       onPointerOver={handlePointerOver}
-      tabIndex={-1}
+      tabIndex={0}
       data-tag="cell"
     >
       {cell?.value}

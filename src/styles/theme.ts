@@ -5,6 +5,7 @@ const theme = {
     blue: '#a0e9fd',
     lightBlue: '#caf3fe',
     white: '#fff',
+    red: '#ff1c1c',
     grid: {
       cell: {
         normal: '#fff',

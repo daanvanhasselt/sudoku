@@ -12,6 +12,7 @@ import {
   toggleCornerForSelectedCells,
   toggleCenterForSelectedCells,
   setHighlightForSelectedCells,
+  markIllegalCells,
 } from 'utils'
 import { addDirectionToCoords } from 'typings'
 
@@ -39,8 +40,9 @@ function reducer(state = initialState, action: AnyAction) {
         lastTickledCell: action.coords,
       }
     case types.SET_VALUE: {
+      let returnState
       if (state.mode === 'normal') {
-        return {
+        returnState = {
           ...state,
           grid: setValueToSelectedCells(
             action.value,
@@ -49,24 +51,28 @@ function reducer(state = initialState, action: AnyAction) {
           ),
         }
       } else if (state.mode === 'corner') {
-        return {
+        returnState = {
           ...state,
           grid: toggleCornerForSelectedCells(action.value, state.grid),
         }
       } else if (state.mode === 'center') {
-        return {
+        returnState = {
           ...state,
           grid: toggleCenterForSelectedCells(action.value, state.grid),
         }
       } else if (state.mode === 'highlight') {
-        return {
+        returnState = {
           ...state,
           grid: setHighlightForSelectedCells(action.value, state.grid),
         }
       } else if (state.mode === 'lines') {
         // TODO
       }
-      return state
+
+      return {
+        ...returnState,
+        grid: markIllegalCells(returnState?.grid),
+      }
     }
     case types.CLEAR_SELECTION:
       return {

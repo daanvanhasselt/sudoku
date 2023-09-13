@@ -7,54 +7,46 @@ function createEmptyGrid(): GRID {
       Array.from({ length: 9 }).map<CELL>(() => ({
         isSelected: false,
         isInitial: false,
+        illegal: false,
       })) as ROW
   ) as GRID
 
   return grid
 }
 
-interface IColInput {
+interface IInput {
   grid: GRID
-  col: number
-  value: N
+  coords: COORDS
+  value?: N
 }
 
-interface IRowInput {
-  grid: GRID
-  row: number
-  value: N
-}
-
-interface IBlockInput {
-  grid: GRID
-  col: number
-  row: number
-  value: N
-}
-
-function isInCol({ grid, col, value }: IColInput): boolean {
+function isInCol({ grid, coords, value }: IInput): boolean {
+  if (!value) return false
   for (let i = 0; i < 9; i++) {
-    if (grid[i][col].value === value) return true
+    if (i === coords.row) continue
+    if (grid[coords.col][i].value === value) return true
   }
   return false
 }
 
-function isInRow({ grid, row, value }: IRowInput): boolean {
+function isInRow({ grid, coords, value }: IInput): boolean {
+  if (!value) return false
   for (let i = 0; i < 9; i++) {
-    if (grid[row][i].value === value) return true
+    if (i === coords.col) continue
+    if (grid[i][coords.row].value === value) return true
   }
   return false
 }
 
-function isInBlock({ grid, col, row, value }: IBlockInput): boolean {
-  row = Math.floor(row / 3) * 3
-  col = Math.floor(col / 3) * 3
-  console.log(`row: ${row}, col: ${col}, value: ${value}`)
+function isInBlock({ grid, coords, value }: IInput): boolean {
+  if (!value) return false
+  const row = Math.floor(coords.row / 3) * 3
+  const col = Math.floor(coords.col / 3) * 3
 
   for (let i = row; i < row + 3; i++) {
     for (let j = col; j < col + 3; j++) {
-      console.log(`grid[${i}][${j}]`, grid[i][j])
-      if (grid[i][j].value === value) return true
+      if (i === coords.row && j === coords.col) continue
+      if (grid[j][i].value === value) return true
     }
   }
   return false
@@ -234,11 +226,36 @@ function expandSelection(grid?: GRID, coords?: COORDS): GRID | undefined {
   })
 }
 
+function markIllegalCells(grid?: GRID): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col, colIndex) =>
+      col.map((cell, rowIndex) => ({
+        ...cell,
+        illegal:
+          isInCol({
+            grid,
+            value: cell.value,
+            coords: { col: colIndex, row: rowIndex } as COORDS,
+          }) ||
+          isInRow({
+            grid,
+            value: cell.value,
+            coords: { col: colIndex, row: rowIndex } as COORDS,
+          }) ||
+          isInBlock({
+            grid,
+            value: cell.value,
+            coords: { col: colIndex, row: rowIndex } as COORDS,
+          }),
+      }))
+    ) as GRID,
+  })
+}
+
 export {
   createEmptyGrid,
-  isInCol,
-  isInRow,
-  isInBlock,
   tickleCell,
   setValueToSelectedCells,
   clearSelection,
@@ -248,4 +265,5 @@ export {
   toggleCornerForSelectedCells,
   toggleCenterForSelectedCells,
   setHighlightForSelectedCells,
+  markIllegalCells,
 }

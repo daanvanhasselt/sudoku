@@ -28,6 +28,9 @@ const CellDiv = styled.div<IProps>`
     &.initial {
       font-weight: bold;
     }
+    &.illegal {
+      color: ${theme.colors.red};
+    }
     background-color: ${selected
       ? theme.colors.grid.cell.selected
       : theme.colors.grid.cell.normal};
@@ -144,7 +147,9 @@ const Cell: FC<CellProps> = ({ colIndex, rowIndex }) => {
   return (
     <CellDiv
       selected={cell?.isSelected}
-      className={cell?.isInitial ? 'initial' : ''}
+      className={`${cell?.isInitial ? 'initial' : ''} ${
+        cell?.illegal ? 'illegal' : ''
+      }`}
       onContextMenu={(e) => e.preventDefault()}
       onPointerDown={handlePointerDown}
       onPointerOver={handlePointerOver}

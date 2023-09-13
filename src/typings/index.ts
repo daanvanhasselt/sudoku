@@ -8,6 +8,7 @@ export type CELL = {
   cornerValues?: N[]
   centerValues?: N[]
   highlight?: N
+  illegal?: boolean
 }
 
 export type COORDS = {

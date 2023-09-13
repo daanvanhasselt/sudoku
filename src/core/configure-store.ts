@@ -14,6 +14,7 @@ const persistedReducer = persistReducer(persistConfig, reducer)
 function setupStore(initialState = {}) {
   const store = configureStore({
     reducer: persistedReducer,
+    middleware: [],
   })
 
   const persistor = persistStore(store)

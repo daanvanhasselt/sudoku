@@ -13,10 +13,11 @@ import styled, { css } from 'styled-components'
 
 interface IProps {
   selected?: boolean
+  $highlight?: N
 }
 
 const CellDiv = styled.div<IProps>`
-  ${({ selected, theme }) => css`
+  ${({ selected, $highlight, theme }) => css`
     user-select: none;
     margin: ${theme.border.thin};
     display: flex;
@@ -32,7 +33,12 @@ const CellDiv = styled.div<IProps>`
       color: ${theme.colors.red};
     }
     background-color: ${selected
-      ? theme.colors.grid.cell.selected
+      ? $highlight && theme.colors.selectedHighlights[$highlight] !== undefined
+        ? theme.colors.selectedHighlights[$highlight]
+        : theme.colors.grid.cell.selected
+      : // use highlight color if it exists
+      $highlight && theme.colors.highlights[$highlight] !== undefined
+      ? theme.colors.highlights[$highlight]
       : theme.colors.grid.cell.normal};
     font-size: ${theme.font.sizes.cell.large};
     @media (max-width: 650px), (max-height: 650px) {
@@ -67,21 +73,37 @@ const CellDiv = styled.div<IProps>`
       /* background-color: red; */
 
       &:nth-child(1) {
-        top: 1px;
-        left: -2px;
+        top: 5px;
+        left: 0;
+        @media (max-width: 650px), (max-height: 650px) {
+          top: 0px;
+          left: -2px;
+        }
       }
 
       &:nth-child(2) {
-        top: 1px;
-        right: -2px;
+        top: 5px;
+        right: 0;
+        @media (max-width: 650px), (max-height: 650px) {
+          top: 0px;
+          right: -2px;
+        }
       }
       &:nth-child(3) {
-        bottom: 1px;
-        left: -2px;
+        bottom: 5px;
+        left: 0;
+        @media (max-width: 650px), (max-height: 650px) {
+          bottom: 0px;
+          left: -2px;
+        }
       }
       &:nth-child(4) {
-        bottom: 1px;
-        right: -2px;
+        bottom: 5px;
+        right: 0;
+        @media (max-width: 650px), (max-height: 650px) {
+          bottom: 0px;
+          right: -2px;
+        }
       }
 
       // hide all the other children
@@ -150,6 +172,7 @@ const Cell: FC<CellProps> = ({ colIndex, rowIndex }) => {
       className={`${cell?.isInitial ? 'initial' : ''} ${
         cell?.illegal ? 'illegal' : ''
       }`}
+      $highlight={cell?.highlight}
       onContextMenu={(e) => e.preventDefault()}
       onPointerDown={handlePointerDown}
       onPointerOver={handlePointerOver}

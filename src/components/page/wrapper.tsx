@@ -6,6 +6,7 @@ import {
   setValue,
   moveSelection,
   expandSelection,
+  setMode,
 } from 'reducers'
 import { N } from 'typings'
 
@@ -61,6 +62,13 @@ const Wrapper: FC<Props> = ({ children }) => {
         if (e.ctrlKey || e.shiftKey) return dispatch(expandSelection('right'))
         else dispatch(moveSelection('right'))
       }
+
+      // set mode with z, x, c, v, b
+      if (e.key === 'z') return dispatch(setMode('normal'))
+      if (e.key === 'x') return dispatch(setMode('corner'))
+      if (e.key === 'c') return dispatch(setMode('center'))
+      if (e.key === 'v') return dispatch(setMode('highlight'))
+      if (e.key === 'b') return dispatch(setMode('lines'))
     }
 
     // handle click outside of grid

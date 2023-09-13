@@ -11,9 +11,13 @@ const SettingModeSwitchButton = styled.button`
   ${({ theme }) => css`
     background: transparent;
     color: ${theme.colors.white};
-    /* border: none; */
+    border: none;
     width: 4em;
     height: 4em;
+    @media (max-width: 500px), (max-height: 500px) {
+      width: 2em;
+      height: 2em;
+    }
     margin: 0;
     padding: 0;
     cursor: pointer;

@@ -32,7 +32,8 @@ const Wrapper: FC<Props> = ({ children }) => {
     // handle keydown
     const handleKeyDown = (e: KeyboardEvent) => {
       // select all, clear selection
-      if (e.ctrlKey && e.key === 'a') return dispatch(selectAll())
+      if (e.ctrlKey && (e.key === 'a' || e.key === 'A'))
+        return dispatch(selectAll())
       if (e.key === 'Escape') return dispatch(clearSelection())
 
       // remove or set value for cell

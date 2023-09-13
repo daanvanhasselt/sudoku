@@ -9,10 +9,16 @@ import {
   setValueToSelectedCells,
   moveSelection,
   expandSelection,
+  toggleCornerForSelectedCells,
+  toggleCenterForSelectedCells,
+  setHighlightForSelectedCells,
 } from 'utils'
 import { addDirectionToCoords } from 'typings'
 
-const initialState: IReducer = {}
+const initialState: IReducer = {
+  mode: 'normal',
+  settingMode: false,
+}
 
 function reducer(state = initialState, action: AnyAction) {
   switch (action.type) {
@@ -32,15 +38,36 @@ function reducer(state = initialState, action: AnyAction) {
         grid: tickleCell(action.coords, state.selectionMode, state.grid),
         lastTickledCell: action.coords,
       }
-    case types.SET_VALUE:
-      return {
-        ...state,
-        grid: setValueToSelectedCells(
-          action.value,
-          state.grid,
-          state.settingMode
-        ),
+    case types.SET_VALUE: {
+      if (state.mode === 'normal') {
+        return {
+          ...state,
+          grid: setValueToSelectedCells(
+            action.value,
+            state.grid,
+            state.settingMode
+          ),
+        }
+      } else if (state.mode === 'corner') {
+        return {
+          ...state,
+          grid: toggleCornerForSelectedCells(action.value, state.grid),
+        }
+      } else if (state.mode === 'center') {
+        return {
+          ...state,
+          grid: toggleCenterForSelectedCells(action.value, state.grid),
+        }
+      } else if (state.mode === 'highlight') {
+        return {
+          ...state,
+          grid: setHighlightForSelectedCells(action.value, state.grid),
+        }
+      } else if (state.mode === 'lines') {
+        // TODO
       }
+      return state
+    }
     case types.CLEAR_SELECTION:
       return {
         ...state,
@@ -72,6 +99,11 @@ function reducer(state = initialState, action: AnyAction) {
       return {
         ...state,
         settingMode: state.settingMode === true ? false : true,
+      }
+    case types.SET_MODE:
+      return {
+        ...state,
+        mode: action.mode,
       }
 
     default:

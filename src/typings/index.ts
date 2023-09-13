@@ -5,6 +5,9 @@ export type CELL = {
   value?: N
   isInitial?: boolean
   isSelected?: boolean
+  cornerValues?: N[]
+  centerValues?: N[]
+  highlight?: N
 }
 
 export type COORDS = {
@@ -41,3 +44,5 @@ export function addDirectionToCoords(coords?: COORDS, dir?: DIRECTION): COORDS {
     }
   }
 }
+
+export type MODE = 'normal' | 'corner' | 'center' | 'highlight' | 'lines'

@@ -21,7 +21,8 @@ const theme = {
   font: {
     sizes: {
       cell: {
-        large: '2rem',
+        large: '2.15rem',
+        medium: '1.15rem',
         small: '1rem',
       },
     },

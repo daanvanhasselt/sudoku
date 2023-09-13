@@ -20,6 +20,7 @@ const CellDiv = styled.div<IProps>`
     user-select: none;
     margin: ${theme.border.thin};
     display: flex;
+    flex-wrap: wrap;
     flex: 1 0 0;
     align-items: center;
     justify-content: center;
@@ -35,10 +36,60 @@ const CellDiv = styled.div<IProps>`
       font-size: ${theme.font.sizes.cell.small};
     }
 
+    position: relative;
+
     &:before {
       content: '';
       float: left;
       padding-top: 100%;
+    }
+
+    .corners {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      /* background-color: blue; */
+    }
+
+    .corner {
+      margin: 0;
+      position: absolute;
+      width: ${theme.font.sizes.cell.medium};
+      font-size: ${theme.font.sizes.cell.small};
+      /* text-align: center; */
+      /* background-color: red; */
+
+      &:nth-child(1) {
+        top: 5px;
+        left: 0;
+      }
+
+      &:nth-child(2) {
+        top: 5px;
+        right: 0;
+      }
+      &:nth-child(3) {
+        bottom: 5px;
+        left: 0;
+      }
+      &:nth-child(4) {
+        bottom: 5px;
+        right: 0;
+      }
+
+      // hide all the other children
+      &:nth-child(n + 5) {
+        display: none;
+      }
+    }
+
+    .center {
+      position: absolute;
+      font-size: ${theme.font.sizes.cell.medium};
+    }
+
+    .hidden {
+      display: none;
     }
   `}
 `
@@ -93,6 +144,22 @@ const Cell: FC<CellProps> = ({ colIndex, rowIndex }) => {
       data-tag="cell"
     >
       {cell?.value}
+
+      {/* render center */}
+      <div className={`center ${cell?.value !== undefined ? 'hidden' : ''}`}>
+        {cell?.centerValues?.map((n, i) => (
+          <React.Fragment key={i}>{n}</React.Fragment>
+        ))}
+      </div>
+
+      {/* render each corner */}
+      <div className={`corners ${cell?.value !== undefined ? 'hidden' : ''}`}>
+        {cell?.cornerValues?.map((n, i) => (
+          <div className="corner" key={i}>
+            {n}
+          </div>
+        ))}
+      </div>
     </CellDiv>
   )
 }

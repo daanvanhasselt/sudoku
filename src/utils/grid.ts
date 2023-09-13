@@ -100,6 +100,88 @@ function setValueToSelectedCells(
   })
 }
 
+const addOrRemove = (arr: N[], item: N) =>
+  arr.includes(item) ? arr.filter((i) => i !== item) : [...arr, item]
+
+function toggleCornerForSelectedCells(
+  value?: N,
+  grid?: GRID
+): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) => {
+        if (cell.isSelected) {
+          const cornerValues =
+            value === undefined
+              ? []
+              : cell.cornerValues
+              ? addOrRemove(cell.cornerValues as N[], value as N)
+              : [value as N]
+          return {
+            ...cell,
+            cornerValues,
+          }
+        }
+        return cell
+      })
+    ) as GRID,
+  })
+}
+
+function toggleCenterForSelectedCells(
+  value?: N,
+  grid?: GRID
+): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) => {
+        if (cell.isSelected) {
+          const centerValues =
+            value === undefined
+              ? []
+              : cell.centerValues
+              ? addOrRemove(cell.centerValues as N[], value as N)
+              : [value as N]
+          return {
+            ...cell,
+            centerValues,
+          }
+        }
+        return cell
+      })
+    ) as GRID,
+  })
+}
+
+function setHighlightForSelectedCells(
+  value?: N,
+  grid?: GRID
+): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) => {
+        if (cell.isSelected) {
+          return {
+            ...cell,
+            highlight: value,
+          }
+        }
+        return cell
+      })
+    ) as GRID,
+  })
+}
+
+/*
+ * Selection
+ */
+
 function setSelectionToAllCells(
   grid?: GRID,
   selected?: boolean
@@ -163,4 +245,7 @@ export {
   selectAll,
   moveSelection,
   expandSelection,
+  toggleCornerForSelectedCells,
+  toggleCenterForSelectedCells,
+  setHighlightForSelectedCells,
 }

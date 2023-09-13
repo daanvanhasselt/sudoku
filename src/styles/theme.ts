@@ -24,6 +24,7 @@ const theme = {
         large: '2.15rem',
         medium: '1.15rem',
         small: '1rem',
+        extrasmall: '0.75rem',
       },
     },
   },

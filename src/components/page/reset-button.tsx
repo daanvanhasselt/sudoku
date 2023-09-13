@@ -1,13 +1,13 @@
 import { FC } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { toggleSettingMode } from 'reducers'
+import { createGrid } from 'reducers'
 import { Icon } from 'react-icons-kit'
-import { ic_edit, ic_edit_off } from 'react-icons-kit/md'
+import { ic_delete } from 'react-icons-kit/md'
 import { IReducer } from 'reducers'
 
 import styled, { css } from 'styled-components'
 
-const SettingModeSwitchButton = styled.button`
+const ResetBtn = styled.button`
   ${({ theme }) => css`
     background: transparent;
     color: ${theme.colors.white};
@@ -22,23 +22,25 @@ const SettingModeSwitchButton = styled.button`
     padding: 0;
     cursor: pointer;
     outline: none;
-    position: absolute;
+    position: fixed;
+    right: 50px;
   `}
 `
 
-const SettingModeSwitch: FC = () => {
+const ResetButton: FC = () => {
   const dispatch = useDispatch()
-
-  const selector = (state: IReducer) => state.settingMode
-  const settingMode = useSelector(selector)
-
-  const toggle = () => dispatch(toggleSettingMode())
+  const reset = () => {
+    // confirm
+    if (window.confirm('Are you sure you want to reset the game?') === false)
+      return
+    dispatch(createGrid())
+  }
 
   return (
-    <SettingModeSwitchButton onClick={toggle}>
-      <Icon icon={settingMode ? ic_edit_off : ic_edit} />
-    </SettingModeSwitchButton>
+    <ResetBtn onClick={reset}>
+      <Icon icon={ic_delete} />
+    </ResetBtn>
   )
 }
 
-export default SettingModeSwitch
+export default ResetButton

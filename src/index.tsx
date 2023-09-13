@@ -1,6 +1,7 @@
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
 import { register, configureStore } from 'core'
 import { GlobalStyles, theme } from 'styles'
 import { ThemeProvider } from 'styled-components'
@@ -13,9 +14,10 @@ import {
   Title,
   Controls,
   SettingModeSwitch,
+  ResetButton,
 } from 'components'
 
-const store = configureStore({})
+const { persistor, store } = configureStore({})
 
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement)
 root.render(
@@ -23,9 +25,11 @@ root.render(
     <ThemeProvider theme={theme}>
       <GlobalStyles />
       <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor} />
         <Wrapper data-tag="wrapper">
           <Header data-tag="header">
             <Title>
+              <ResetButton />
               Sudoku
               <SettingModeSwitch />
             </Title>

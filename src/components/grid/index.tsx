@@ -7,11 +7,11 @@ import { Container } from './container'
 import { createGrid } from 'reducers'
 
 export const Grid: FC = () => {
-  const dispatch = useDispatch<Dispatch<AnyAction>>()
-  const create = useCallback(() => dispatch(createGrid()), [dispatch])
-  useEffect(() => {
-    create()
-  }, [create])
+  // const dispatch = useDispatch<Dispatch<AnyAction>>()
+  // const create = useCallback(() => dispatch(createGrid()), [dispatch])
+  // useEffect(() => {
+  //   create()
+  // }, [create])
 
   return (
     <Container data-tag="grid-container">

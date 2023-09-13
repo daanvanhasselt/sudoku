@@ -32,7 +32,7 @@ const CellDiv = styled.div<IProps>`
       ? theme.colors.grid.cell.selected
       : theme.colors.grid.cell.normal};
     font-size: ${theme.font.sizes.cell.large};
-    @media (max-width: 500px) {
+    @media (max-width: 650px), (max-height: 650px) {
       font-size: ${theme.font.sizes.cell.small};
     }
 
@@ -56,25 +56,29 @@ const CellDiv = styled.div<IProps>`
       position: absolute;
       width: ${theme.font.sizes.cell.medium};
       font-size: ${theme.font.sizes.cell.small};
+
+      @media (max-width: 650px), (max-height: 650px) {
+        font-size: ${theme.font.sizes.cell.extrasmall};
+      }
       /* text-align: center; */
       /* background-color: red; */
 
       &:nth-child(1) {
-        top: 5px;
-        left: 0;
+        top: 1px;
+        left: -2px;
       }
 
       &:nth-child(2) {
-        top: 5px;
-        right: 0;
+        top: 1px;
+        right: -2px;
       }
       &:nth-child(3) {
-        bottom: 5px;
-        left: 0;
+        bottom: 1px;
+        left: -2px;
       }
       &:nth-child(4) {
-        bottom: 5px;
-        right: 0;
+        bottom: 1px;
+        right: -2px;
       }
 
       // hide all the other children
@@ -86,6 +90,10 @@ const CellDiv = styled.div<IProps>`
     .center {
       position: absolute;
       font-size: ${theme.font.sizes.cell.medium};
+
+      @media (max-width: 650px), (max-height: 650px) {
+        font-size: ${theme.font.sizes.cell.extrasmall};
+      }
     }
 
     .hidden {

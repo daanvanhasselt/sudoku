@@ -41,3 +41,7 @@ export const toggleSettingMode = (): Action => {
 export const setMode = (mode: MODE): AnyAction => {
   return { type: types.SET_MODE, mode }
 }
+
+export const selectNumber = (value?: N): AnyAction => {
+  return { type: types.SELECT_NUMBER, value }
+}

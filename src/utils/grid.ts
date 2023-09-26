@@ -254,6 +254,55 @@ function markIllegalCells(grid?: GRID): GRID | undefined {
   })
 }
 
+function selectNormalNumber(grid?: GRID, number?: N, additive?: boolean) {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) => ({
+        ...cell,
+        isSelected:
+          (additive === true && cell.isSelected) ||
+          (number !== undefined && cell.value === number),
+      }))
+    ) as GRID,
+  })
+}
+
+function selectCornerNumber(grid?: GRID, number?: N, additive?: boolean) {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) => ({
+        ...cell,
+        isSelected:
+          (additive === true && cell.isSelected) ||
+          (number !== undefined &&
+            cell.value === undefined &&
+            cell.cornerValues?.includes(number)),
+      }))
+    ) as GRID,
+  })
+}
+
+function selectCenterNumber(grid?: GRID, number?: N, additive?: boolean) {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) => ({
+        ...cell,
+        isSelected:
+          (additive === true && cell.isSelected) ||
+          (number !== undefined &&
+            cell.value === undefined &&
+            cell.centerValues?.includes(number)),
+      }))
+    ) as GRID,
+  })
+}
+
 export {
   createEmptyGrid,
   tickleCell,
@@ -266,4 +315,7 @@ export {
   toggleCenterForSelectedCells,
   setHighlightForSelectedCells,
   markIllegalCells,
+  selectNormalNumber,
+  selectCornerNumber,
+  selectCenterNumber,
 }

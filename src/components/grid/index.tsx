@@ -5,14 +5,9 @@ import { Row } from './row'
 import Cell from './cell'
 import { Container } from './container'
 import { createGrid } from 'reducers'
+import Xarrow from 'react-xarrows'
 
 export const Grid: FC = () => {
-  // const dispatch = useDispatch<Dispatch<AnyAction>>()
-  // const create = useCallback(() => dispatch(createGrid()), [dispatch])
-  // useEffect(() => {
-  //   create()
-  // }, [create])
-
   return (
     <Container data-tag="grid-container">
       {Children.toArray(
@@ -30,6 +25,14 @@ export const Grid: FC = () => {
           </Row>
         ))
       )}
+      {/* <Xarrow
+        start="cell00"
+        end="cell08"
+        showHead={true}
+        showTail={true}
+        path="smooth"
+        curveness={0.15}
+      /> */}
     </Container>
   )
 }

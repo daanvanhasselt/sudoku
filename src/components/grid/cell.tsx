@@ -178,6 +178,7 @@ const Cell: FC<CellProps> = ({ colIndex, rowIndex }) => {
       onPointerOver={handlePointerOver}
       tabIndex={0}
       data-tag="cell"
+      id={`cell${colIndex}${rowIndex}`}
     >
       {cell?.value}
 

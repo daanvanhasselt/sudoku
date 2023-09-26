@@ -1,6 +1,6 @@
 import { FC } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValue, setMode } from 'reducers'
+import { setValue, setMode, selectNumber, setSelectionMode } from 'reducers'
 import { N } from 'typings'
 import { IReducer } from 'reducers'
 
@@ -56,6 +56,7 @@ const Controls: FC = () => {
   const mode = useSelector(selector)
 
   const fill = (n?: N) => dispatch(setValue(n))
+  const select = (n?: N) => dispatch(selectNumber(n))
 
   return (
     <>
@@ -70,6 +71,20 @@ const Controls: FC = () => {
           </Btn>
         ))}
         <Btn onClick={() => fill(undefined)}> </Btn>
+      </ControlsDiv>
+      <ControlsDiv data-tag="select">
+        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
+          <Btn
+            key={n}
+            onClick={(event: React.MouseEvent) => {
+              select(n as N)
+            }}
+            highlight={mode === 'highlight' ? (n as N) : undefined}
+          >
+            {n}
+          </Btn>
+        ))}
+        <Btn onClick={() => select(undefined)}> </Btn>
       </ControlsDiv>
       <ControlsDiv data-tag="mode">
         <Btn

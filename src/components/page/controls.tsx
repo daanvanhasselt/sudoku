@@ -6,8 +6,8 @@ import { IReducer } from 'reducers'
 
 import styled, { css } from 'styled-components'
 
-const Btn = styled.button<{ highlight?: N }>`
-  ${({ highlight, theme }) => css`
+const Btn = styled.button<{ highlight?: N; select?: Boolean }>`
+  ${({ highlight, select, theme }) => css`
     min-width: 44px;
     height: 44px;
     border-radius: 10px;
@@ -32,6 +32,8 @@ const Btn = styled.button<{ highlight?: N }>`
     &:active {
       background: ${theme.colors.grid.cell.selected};
     }
+
+    border: ${select ? '2px dashed #000' : ''};
   `}
 `
 
@@ -79,12 +81,14 @@ const Controls: FC = () => {
             onClick={(event: React.MouseEvent) => {
               select(n as N)
             }}
-            highlight={mode === 'highlight' ? (n as N) : undefined}
+            select={true}
           >
             {n}
           </Btn>
         ))}
-        <Btn onClick={() => select(undefined)}> </Btn>
+        <Btn select={true} onClick={() => select(undefined)}>
+          {' '}
+        </Btn>
       </ControlsDiv>
       <ControlsDiv data-tag="mode">
         <Btn
@@ -110,12 +114,6 @@ const Controls: FC = () => {
           onClick={() => dispatch(setMode('highlight'))}
         >
           Highlight
-        </Btn>
-        <Btn
-          className={mode === 'lines' ? 'active' : ''}
-          onClick={() => dispatch(setMode('lines'))}
-        >
-          Lines
         </Btn>
       </ControlsDiv>
     </>

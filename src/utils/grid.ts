@@ -254,22 +254,20 @@ function markIllegalCells(grid?: GRID): GRID | undefined {
   })
 }
 
-function selectNormalNumber(grid?: GRID, number?: N, additive?: boolean) {
+function selectNormalNumber(grid?: GRID, number?: N) {
   if (!grid) return createEmptyGrid()
 
   return update(grid, {
     $set: grid.map((col) =>
       col.map((cell) => ({
         ...cell,
-        isSelected:
-          (additive === true && cell.isSelected) ||
-          (number !== undefined && cell.value === number),
+        isSelected: number !== undefined && cell.value === number,
       }))
     ) as GRID,
   })
 }
 
-function selectCornerNumber(grid?: GRID, number?: N, additive?: boolean) {
+function selectCornerNumber(grid?: GRID, number?: N) {
   if (!grid) return createEmptyGrid()
 
   return update(grid, {
@@ -277,16 +275,15 @@ function selectCornerNumber(grid?: GRID, number?: N, additive?: boolean) {
       col.map((cell) => ({
         ...cell,
         isSelected:
-          (additive === true && cell.isSelected) ||
-          (number !== undefined &&
-            cell.value === undefined &&
-            cell.cornerValues?.includes(number)),
+          number !== undefined &&
+          cell.value === undefined &&
+          cell.cornerValues?.includes(number),
       }))
     ) as GRID,
   })
 }
 
-function selectCenterNumber(grid?: GRID, number?: N, additive?: boolean) {
+function selectCenterNumber(grid?: GRID, number?: N) {
   if (!grid) return createEmptyGrid()
 
   return update(grid, {
@@ -294,9 +291,25 @@ function selectCenterNumber(grid?: GRID, number?: N, additive?: boolean) {
       col.map((cell) => ({
         ...cell,
         isSelected:
-          (additive === true && cell.isSelected) ||
-          (number !== undefined &&
-            cell.value === undefined &&
+          number !== undefined &&
+          cell.value === undefined &&
+          cell.centerValues?.includes(number),
+      }))
+    ) as GRID,
+  })
+}
+
+function selectAnyKindOfNumber(grid?: GRID, number?: N) {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) => ({
+        ...cell,
+        isSelected:
+          number !== undefined &&
+          (cell.value === number ||
+            cell.cornerValues?.includes(number) ||
             cell.centerValues?.includes(number)),
       }))
     ) as GRID,
@@ -318,4 +331,5 @@ export {
   selectNormalNumber,
   selectCornerNumber,
   selectCenterNumber,
+  selectAnyKindOfNumber,
 }

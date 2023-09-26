@@ -1,6 +1,6 @@
 {
   "name": "redux-sudoku",
-  "homepage": "https://daanvanhasselt.github.io/sudoku",
+  "homepage": "https://daanvanhasselt.github.io/sudoku/",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

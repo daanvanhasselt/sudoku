@@ -13,9 +13,7 @@ import {
   toggleCenterForSelectedCells,
   setHighlightForSelectedCells,
   markIllegalCells,
-  selectNormalNumber,
-  selectCornerNumber,
-  selectCenterNumber,
+  selectAnyKindOfNumber,
 } from 'utils'
 import { addDirectionToCoords } from 'typings'
 
@@ -114,25 +112,11 @@ function reducer(state = initialState, action: AnyAction) {
         ...state,
         mode: action.mode,
       }
-    case types.SELECT_NUMBER: {
-      console.log(state.selectionMode)
-      if (state.mode === 'corner') {
-        return {
-          ...state,
-          grid: selectCornerNumber(state.grid, action.value),
-        }
-      } else if (state.mode === 'center') {
-        return {
-          ...state,
-          grid: selectCenterNumber(state.grid, action.value),
-        }
-      }
-
+    case types.SELECT_NUMBER:
       return {
         ...state,
-        grid: selectNormalNumber(state.grid, action.value),
+        grid: selectAnyKindOfNumber(state.grid, action.value),
       }
-    }
     default:
       return state
   }

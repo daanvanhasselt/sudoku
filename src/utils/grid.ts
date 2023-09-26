@@ -309,8 +309,9 @@ function selectAnyKindOfNumber(grid?: GRID, number?: N) {
         isSelected:
           number !== undefined &&
           (cell.value === number ||
-            cell.cornerValues?.includes(number) ||
-            cell.centerValues?.includes(number)),
+            (cell.value === undefined &&
+              (cell.cornerValues?.includes(number) ||
+                cell.centerValues?.includes(number)))),
       }))
     ) as GRID,
   })

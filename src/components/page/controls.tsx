@@ -6,14 +6,14 @@ import { IReducer } from 'reducers'
 
 import styled, { css } from 'styled-components'
 
-const Btn = styled.button<{ highlight?: N; select?: Boolean }>`
-  ${({ highlight, select, theme }) => css`
+const Btn = styled.button<{ $highlight?: N; $select?: Boolean }>`
+  ${({ $highlight, $select, theme }) => css`
     min-width: 44px;
     height: 44px;
     border-radius: 10px;
-    background-color: ${highlight !== undefined &&
-    theme.colors.highlights[highlight] !== undefined
-      ? theme.colors.highlights[highlight]
+    background-color: ${$highlight !== undefined &&
+    theme.colors.highlights[$highlight] !== undefined
+      ? theme.colors.highlights[$highlight]
       : theme.colors.white};
     font-size: 1.5em;
 
@@ -33,12 +33,12 @@ const Btn = styled.button<{ highlight?: N; select?: Boolean }>`
       background: ${theme.colors.grid.cell.selected};
     }
 
-    border: ${select ? '2px dashed #000' : ''};
+    border: ${$select ? '2px dashed #000' : ''};
   `}
 `
 
-const ControlsDiv = styled.div<{ highlight?: N }>`
-  ${({ highlight, theme }) => css`
+const ControlsDiv = styled.div<{ $highlight?: N }>`
+  ${({ $highlight, theme }) => css`
     user-select: none;
     display: flex;
     flex-direction: row;
@@ -67,7 +67,7 @@ const Controls: FC = () => {
           <Btn
             key={n}
             onClick={() => fill(n as N)}
-            highlight={mode === 'highlight' ? (n as N) : undefined}
+            $highlight={mode === 'highlight' ? (n as N) : undefined}
           >
             {n}
           </Btn>
@@ -81,12 +81,12 @@ const Controls: FC = () => {
             onClick={(event: React.MouseEvent) => {
               select(n as N)
             }}
-            select={true}
+            $select={true}
           >
             {n}
           </Btn>
         ))}
-        <Btn select={true} onClick={() => select(undefined)}>
+        <Btn $select={true} onClick={() => select(undefined)}>
           {' '}
         </Btn>
       </ControlsDiv>

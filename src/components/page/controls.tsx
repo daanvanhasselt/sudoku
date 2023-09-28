@@ -16,6 +16,7 @@ const Btn = styled.button<{ $highlight?: N; $select?: Boolean }>`
       ? theme.colors.highlights[$highlight]
       : theme.colors.white};
     font-size: 1.5em;
+    color: ${$highlight ? theme.colors.transparent : theme.colors.black};
 
     flex-grow: 1;
     flex-shrink: 1;
@@ -69,7 +70,7 @@ const Controls: FC = () => {
             onClick={() => fill(n as N)}
             $highlight={mode === 'highlight' ? (n as N) : undefined}
           >
-            {n}
+            {mode === 'highlight' ? '..' : n}
           </Btn>
         ))}
         <Btn onClick={() => fill(undefined)}> </Btn>
@@ -113,7 +114,7 @@ const Controls: FC = () => {
           className={mode === 'highlight' ? 'active' : ''}
           onClick={() => dispatch(setMode('highlight'))}
         >
-          Highlight
+          Color
         </Btn>
       </ControlsDiv>
     </>

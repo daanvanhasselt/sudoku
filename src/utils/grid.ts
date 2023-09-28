@@ -70,7 +70,6 @@ function setValueToSelectedCells(
   settingModeActive: boolean = false
 ): GRID | undefined {
   if (!grid) return createEmptyGrid()
-
   return update(grid, {
     $set: grid.map((col) =>
       col.map((cell) => {
@@ -113,7 +112,7 @@ function toggleCornerForSelectedCells(
               : [value as N]
           return {
             ...cell,
-            cornerValues,
+            cornerValues: cornerValues.sort(),
           }
         }
         return cell
@@ -140,7 +139,7 @@ function toggleCenterForSelectedCells(
               : [value as N]
           return {
             ...cell,
-            centerValues,
+            centerValues: centerValues.sort(),
           }
         }
         return cell

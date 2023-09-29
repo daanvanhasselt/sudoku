@@ -21,7 +21,7 @@ try {
 
       // Manual injection point for manifest files.
       try {
-        workbox.precaching.precacheAndRoute([{"revision":"8062eeb96a9fc5a4f13740160bbecef5","url":"index.html"},{"revision":"33dbdd0177549353eeeb785d02c294af","url":"logo192.png"},{"revision":"917515db74ea8d1aee6a246cfbcc0b45","url":"logo512.png"},{"revision":"3c50b306a46bb901b13bd1874e90804c","url":"static/js/main.fa92cb35.js"}])
+        workbox.precaching.precacheAndRoute([{"revision":"a598ca4a2853f5629e42cbb70d4ad4b3","url":"index.html"},{"revision":"33dbdd0177549353eeeb785d02c294af","url":"logo192.png"},{"revision":"917515db74ea8d1aee6a246cfbcc0b45","url":"logo512.png"},{"revision":"9e78db0f8890ef45aea026662777539b","url":"static/js/main.db1fc437.js"}])
       } catch (e) {
         console.error(e)
       }

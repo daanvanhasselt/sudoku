@@ -124,6 +124,6 @@ function reducer(state = initialState, action: AnyAction) {
 }
 
 const undoableReducer = undoable(reducer, {
-  filter: includeAction(types.SET_VALUE),
+  filter: includeAction([types.SET_VALUE, types.CREATE_GRID, types.SET_MODE]),
 })
 export default undoableReducer

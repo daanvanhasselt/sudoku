@@ -148,7 +148,7 @@ const Controls: FC = () => {
       <ControlsDiv data-tag="undo">
         <Btn onClick={() => dispatch(UndoActionCreators.undo())}>Undo</Btn>
         <Btn onClick={() => dispatch(UndoActionCreators.redo())}>Redo</Btn>
-        <Btn onClick={() => importGrid()}>Import</Btn>
+        {/* <Btn onClick={() => importGrid()}>Import</Btn> */}
         <Btn onClick={() => exportGrid()}>Export</Btn>
       </ControlsDiv>
     </>

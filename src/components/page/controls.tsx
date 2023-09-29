@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValue, setMode, selectNumber, setGrid } from 'reducers'
 import { N } from 'typings'
@@ -52,6 +52,11 @@ const ControlsDiv = styled.div<{ $highlight?: N }>`
     background-color: transparent;
     margin-top: 10px;
     width: 100%;
+
+    a {
+      color: ${theme.colors.lightBlue};
+      font-size: 0.75em;
+    }
   `}
 `
 
@@ -66,16 +71,21 @@ const Controls: FC = () => {
   const fill = (n?: N) => dispatch(setValue(n))
   const select = (n?: N) => dispatch(selectNumber(n))
 
+  const [exportedGrid, setExportedGrid] = useState<string>('' as string)
+
   // load #data from url
   useEffect(() => {
     const url = new URL(window.location.href)
     const data = url.searchParams.get('data')
     if (data) {
-      console.log(data)
       const grid = decodeGrid(data)
       if (grid) dispatch(setGrid(grid))
     }
   }, [])
+
+  const clipboardIsAvailable = () => {
+    return navigator.clipboard && navigator.clipboard.writeText
+  }
 
   const importGrid = () => {
     navigator.clipboard.readText().then((text) => {
@@ -86,14 +96,13 @@ const Controls: FC = () => {
 
   const exportGrid = () => {
     const gridString = encodeGrid(grid)
-    navigator.clipboard.writeText(gridString)
-    console.log(gridString)
-    // alert the user
-    alert('Copied to clipboard!')
-  }
+    const url = new URL(window.location.href)
+    url.searchParams.set('data', gridString)
+    setExportedGrid(url.toString())
 
-  const clipboardIsAvailable = () => {
-    return navigator.clipboard && navigator.clipboard.writeText
+    // navigator.clipboard.writeText(gridString)
+    // alert the user
+    // alert('Copied to clipboard!')
   }
 
   return (
@@ -167,6 +176,11 @@ const Controls: FC = () => {
         >
           Export
         </Btn>
+        {exportedGrid && (
+          <ControlsDiv>
+            <a href={exportedGrid}>{exportedGrid}</a>
+          </ControlsDiv>
+        )}
       </ControlsDiv>
     </>
   )

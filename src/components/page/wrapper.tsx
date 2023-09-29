@@ -9,6 +9,7 @@ import {
   setMode,
 } from 'reducers'
 import { N } from 'typings'
+import { ActionCreators as UndoActionCreators } from 'redux-undo'
 
 import styled, { css } from 'styled-components'
 
@@ -36,6 +37,11 @@ const Wrapper: FC<Props> = ({ children }) => {
       if (e.ctrlKey && (e.key === 'a' || e.key === 'A'))
         return dispatch(selectAll())
       if (e.key === 'Escape') return dispatch(clearSelection())
+
+      // undo redo
+      if (e.ctrlKey && e.key === 'z') return dispatch(UndoActionCreators.undo())
+      if (e.ctrlKey && (e.key === 'Z' || e.key === 'y' || e.key === 'Y'))
+        return dispatch(UndoActionCreators.redo())
 
       // remove or set value for cell
       if (e.key === 'Backspace' || e.key === 'Delete') {

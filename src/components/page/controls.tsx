@@ -8,7 +8,11 @@ import { encodeGrid, decodeGrid } from 'utils'
 
 import styled, { css } from 'styled-components'
 
-const Btn = styled.button<{ $highlight?: N; $select?: Boolean }>`
+const Btn = styled.button<{
+  $highlight?: N
+  $select?: Boolean
+  $small?: Boolean
+}>`
   ${({ $highlight, $select, theme }) => css`
     min-width: 44px;
     height: 44px;
@@ -53,9 +57,11 @@ const ControlsDiv = styled.div<{ $highlight?: N }>`
     margin-top: 10px;
     width: 100%;
 
-    a {
+    a,
+    p {
       color: ${theme.colors.lightBlue};
       font-size: 0.75em;
+      user-select: text;
     }
   `}
 `
@@ -72,6 +78,9 @@ const Controls: FC = () => {
   const select = (n?: N) => dispatch(selectNumber(n))
 
   const [exportedGrid, setExportedGrid] = useState<string>('' as string)
+  const [exportedSudokuWiki, setExportedSudokuWiki] = useState<string>(
+    '' as string
+  )
 
   // load #data from url
   useEffect(() => {
@@ -92,6 +101,22 @@ const Controls: FC = () => {
     // navigator.clipboard.writeText(gridString)
     // alert the user
     // alert('Copied to clipboard!')
+  }
+
+  const exportSudokuWiki = () => {
+    // take each value in the grid and append them as a string
+    // use _ for empty cells
+    let gridString = ''
+    for (let i = 0; i < 9; i++) {
+      let row = ''
+      for (let j = 0; j < 9; j++) {
+        const cell = grid?.[j]?.[i]
+        row += cell?.value || '_'
+      }
+      gridString += row
+    }
+
+    setExportedSudokuWiki(gridString || '')
   }
 
   return (
@@ -153,10 +178,21 @@ const Controls: FC = () => {
       <ControlsDiv data-tag="undo">
         <Btn onClick={() => dispatch(UndoActionCreators.undo())}>Undo</Btn>
         <Btn onClick={() => dispatch(UndoActionCreators.redo())}>Redo</Btn>
-        <Btn onClick={() => exportGrid()}>Export</Btn>
+        <Btn $small={true} onClick={() => exportGrid()}>
+          Export
+        </Btn>
         {exportedGrid && (
           <ControlsDiv>
             <a href={exportedGrid}>{exportedGrid}</a>
+          </ControlsDiv>
+        )}
+        <Btn $small={true} onClick={() => exportSudokuWiki()}>
+          Export SudokuWiki
+        </Btn>
+
+        {exportedSudokuWiki && (
+          <ControlsDiv>
+            <p>{exportedSudokuWiki}</p>
           </ControlsDiv>
         )}
       </ControlsDiv>

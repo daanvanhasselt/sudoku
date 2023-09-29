@@ -22,6 +22,7 @@ const Btn = styled.button<{ $highlight?: N; $select?: Boolean }>`
 
     flex-grow: 1;
     flex-shrink: 1;
+
     @media (max-width: 500px) {
       flex-basis: 33%;
       flex-grow: 0;
@@ -89,6 +90,10 @@ const Controls: FC = () => {
     alert('Copied to clipboard!')
   }
 
+  const clipboardIsAvailable = () => {
+    return navigator.clipboard && navigator.clipboard.writeText
+  }
+
   return (
     <>
       <ControlsDiv data-tag="controls">
@@ -148,8 +153,18 @@ const Controls: FC = () => {
       <ControlsDiv data-tag="undo">
         <Btn onClick={() => dispatch(UndoActionCreators.undo())}>Undo</Btn>
         <Btn onClick={() => dispatch(UndoActionCreators.redo())}>Redo</Btn>
-        {/* <Btn onClick={() => importGrid()}>Import</Btn> */}
-        <Btn onClick={() => exportGrid()}>Export</Btn>
+        <Btn
+          style={{ display: clipboardIsAvailable() ? 'block' : 'none' }}
+          onClick={() => importGrid()}
+        >
+          Import
+        </Btn>
+        <Btn
+          style={{ display: clipboardIsAvailable() ? 'block' : 'none' }}
+          onClick={() => exportGrid()}
+        >
+          Export
+        </Btn>
       </ControlsDiv>
     </>
   )

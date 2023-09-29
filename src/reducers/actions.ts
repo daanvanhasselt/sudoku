@@ -1,9 +1,13 @@
 import { Action, AnyAction } from 'redux'
 import * as types from './types'
-import { N, COORDS, DIRECTION, MODE } from 'typings'
+import { N, COORDS, DIRECTION, MODE, GRID } from 'typings'
 
 export const createGrid = (): Action => {
   return { type: types.CREATE_GRID }
+}
+
+export const setGrid = (grid?: GRID): AnyAction => {
+  return { type: types.SET_GRID, grid }
 }
 
 export const setSelectionMode = (mode: boolean): AnyAction => {

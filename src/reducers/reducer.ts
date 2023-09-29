@@ -30,6 +30,11 @@ function reducer(state = initialState, action: AnyAction) {
         ...state,
         grid: createEmptyGrid(),
       }
+    case types.SET_GRID:
+      return {
+        ...state,
+        grid: action.grid,
+      }
     case types.SET_SELECTION_MODE:
       return {
         ...state,
@@ -124,6 +129,11 @@ function reducer(state = initialState, action: AnyAction) {
 }
 
 const undoableReducer = undoable(reducer, {
-  filter: includeAction([types.SET_VALUE, types.CREATE_GRID, types.SET_MODE]),
+  filter: includeAction([
+    types.CREATE_GRID,
+    types.SET_GRID,
+    types.SET_MODE,
+    types.SET_VALUE,
+  ]),
 })
 export default undoableReducer

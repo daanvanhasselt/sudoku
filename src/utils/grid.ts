@@ -316,6 +316,90 @@ function selectAnyKindOfNumber(grid?: GRID, number?: N) {
   })
 }
 
+function LZWCompress(data: String) {
+  var dict: any = {}
+  var out: any = []
+  var currChar
+  var phrase = data.charAt(0)
+  var code = 256
+  for (var i = 1; i < data.length; i++) {
+    currChar = data.charAt(i)
+    if (dict[phrase + currChar] != null) {
+      phrase += currChar
+    } else {
+      out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0))
+      dict[phrase + currChar] = code
+      code++
+      phrase = currChar
+    }
+  }
+  out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0))
+  for (var i = 0; i < out.length; i++) {
+    out[i] = String.fromCharCode(out[i])
+  }
+  return out.join('')
+}
+
+function LZWExpand(data: String) {
+  var dict: any = {}
+  var currChar = data.charAt(0)
+  var oldPhrase = currChar
+  var out: any = [currChar]
+  var code = 256
+  var phrase
+  for (var i = 1; i < data.length; i++) {
+    var currCode = data.charCodeAt(i)
+    if (currCode < 256) {
+      phrase = data.charAt(i)
+    } else {
+      phrase = dict[currCode] ? dict[currCode] : oldPhrase + currChar
+    }
+    out += phrase
+    currChar = phrase.charAt(0)
+    dict[code] = oldPhrase + currChar
+    code++
+    oldPhrase = phrase
+  }
+  return out
+}
+
+function encodeGrid(grid?: GRID) {
+  if (!grid) return ''
+
+  // save values, cornerValues, centerValues, highlight
+  const values = grid.map((col) =>
+    col.map((cell) => ({
+      value: cell.value ? cell.value : 0,
+      cornerValues: cell.cornerValues ? cell.cornerValues : undefined,
+      centerValues: cell.centerValues ? cell.centerValues : undefined,
+      highlight: cell.highlight ? cell.highlight : undefined,
+      selected: cell.isSelected ? cell.isSelected : undefined,
+      initial: cell.isInitial ? cell.isInitial : undefined,
+    }))
+  )
+
+  const valuesString = JSON.stringify(values)
+  const compressed = LZWCompress(valuesString)
+  return compressed
+}
+
+function decodeGrid(encoded?: String) {
+  if (!encoded) return createEmptyGrid()
+  const valuesString = LZWExpand(encoded)
+  const values = JSON.parse(valuesString)
+  const grid = values.map((col: any) =>
+    col.map((cell: any) => ({
+      value: cell.value ? cell.value : undefined,
+      cornerValues: cell.cornerValues ? cell.cornerValues : undefined,
+      centerValues: cell.centerValues ? cell.centerValues : undefined,
+      highlight: cell.highlight ? cell.highlight : undefined,
+      isSelected: cell.selected ? cell.selected : undefined,
+      isInitial: cell.initial ? cell.initial : undefined,
+    }))
+  )
+  return grid
+}
+
 export {
   createEmptyGrid,
   tickleCell,
@@ -332,4 +416,6 @@ export {
   selectCornerNumber,
   selectCenterNumber,
   selectAnyKindOfNumber,
+  encodeGrid,
+  decodeGrid,
 }

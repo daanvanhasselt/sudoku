@@ -1,9 +1,10 @@
-import { FC } from 'react'
+import { FC, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { setValue, setMode, selectNumber, setSelectionMode } from 'reducers'
+import { setValue, setMode, selectNumber, setGrid } from 'reducers'
 import { N } from 'typings'
 import { IReducer } from 'reducers'
 import { ActionCreators as UndoActionCreators } from 'redux-undo'
+import { encodeGrid, decodeGrid } from 'utils'
 
 import styled, { css } from 'styled-components'
 
@@ -56,11 +57,37 @@ const ControlsDiv = styled.div<{ $highlight?: N }>`
 const Controls: FC = () => {
   const dispatch = useDispatch()
   // get mode from state
-  const selector = (state: IReducer) => state.present.mode
-  const mode = useSelector(selector)
+  const modeSelector = (state: IReducer) => state.present.mode
+  const mode = useSelector(modeSelector)
+  const gridSelector = (state: IReducer) => state.present.grid
+  const grid = useSelector(gridSelector)
 
   const fill = (n?: N) => dispatch(setValue(n))
   const select = (n?: N) => dispatch(selectNumber(n))
+
+  // load #data from url
+  useEffect(() => {
+    const url = new URL(window.location.href)
+    const data = url.searchParams.get('data')
+    if (data) {
+      const grid = decodeGrid(data)
+      if (grid) dispatch(setGrid(grid))
+    }
+  }, [])
+
+  const importGrid = () => {
+    navigator.clipboard.readText().then((text) => {
+      const grid = decodeGrid(text)
+      if (grid) dispatch(setGrid(grid))
+    })
+  }
+
+  const exportGrid = () => {
+    const gridString = encodeGrid(grid)
+    navigator.clipboard.writeText(gridString)
+    // alert the user
+    alert('Copied to clipboard!')
+  }
 
   return (
     <>
@@ -121,6 +148,8 @@ const Controls: FC = () => {
       <ControlsDiv data-tag="undo">
         <Btn onClick={() => dispatch(UndoActionCreators.undo())}>Undo</Btn>
         <Btn onClick={() => dispatch(UndoActionCreators.redo())}>Redo</Btn>
+        <Btn onClick={() => importGrid()}>Import</Btn>
+        <Btn onClick={() => exportGrid()}>Export</Btn>
       </ControlsDiv>
     </>
   )

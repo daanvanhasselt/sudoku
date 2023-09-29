@@ -1,5 +1,6 @@
 import { GRID, COORDS, ROW, CELL, N } from 'typings'
 import update from 'immutability-helper'
+import JSONCrush from 'jsoncrush'
 
 function createEmptyGrid(): GRID {
   const grid = Array.from({ length: 9 }).map<ROW>(
@@ -316,53 +317,6 @@ function selectAnyKindOfNumber(grid?: GRID, number?: N) {
   })
 }
 
-function LZWCompress(data: String) {
-  var dict: any = {}
-  var out: any = []
-  var currChar
-  var phrase = data.charAt(0)
-  var code = 256
-  for (var i = 1; i < data.length; i++) {
-    currChar = data.charAt(i)
-    if (dict[phrase + currChar] != null) {
-      phrase += currChar
-    } else {
-      out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0))
-      dict[phrase + currChar] = code
-      code++
-      phrase = currChar
-    }
-  }
-  out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0))
-  for (var i = 0; i < out.length; i++) {
-    out[i] = String.fromCharCode(out[i])
-  }
-  return out.join('')
-}
-
-function LZWExpand(data: String) {
-  var dict: any = {}
-  var currChar = data.charAt(0)
-  var oldPhrase = currChar
-  var out: any = [currChar]
-  var code = 256
-  var phrase
-  for (var i = 1; i < data.length; i++) {
-    var currCode = data.charCodeAt(i)
-    if (currCode < 256) {
-      phrase = data.charAt(i)
-    } else {
-      phrase = dict[currCode] ? dict[currCode] : oldPhrase + currChar
-    }
-    out += phrase
-    currChar = phrase.charAt(0)
-    dict[code] = oldPhrase + currChar
-    code++
-    oldPhrase = phrase
-  }
-  return out
-}
-
 function encodeGrid(grid?: GRID) {
   if (!grid) return ''
 
@@ -379,13 +333,13 @@ function encodeGrid(grid?: GRID) {
   )
 
   const valuesString = JSON.stringify(values)
-  const compressed = LZWCompress(valuesString)
+  const compressed = JSONCrush.crush(valuesString)
   return compressed
 }
 
-function decodeGrid(encoded?: String) {
+function decodeGrid(encoded?: string) {
   if (!encoded) return createEmptyGrid()
-  const valuesString = LZWExpand(encoded)
+  const valuesString = JSONCrush.uncrush(encoded)
   const values = JSON.parse(valuesString)
   const grid = values.map((col: any) =>
     col.map((cell: any) => ({

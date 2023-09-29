@@ -71,6 +71,7 @@ const Controls: FC = () => {
     const url = new URL(window.location.href)
     const data = url.searchParams.get('data')
     if (data) {
+      console.log(data)
       const grid = decodeGrid(data)
       if (grid) dispatch(setGrid(grid))
     }
@@ -86,6 +87,7 @@ const Controls: FC = () => {
   const exportGrid = () => {
     const gridString = encodeGrid(grid)
     navigator.clipboard.writeText(gridString)
+    console.log(gridString)
     // alert the user
     alert('Copied to clipboard!')
   }

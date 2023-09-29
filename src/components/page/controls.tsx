@@ -83,17 +83,6 @@ const Controls: FC = () => {
     }
   }, [])
 
-  const clipboardIsAvailable = () => {
-    return navigator.clipboard && navigator.clipboard.writeText
-  }
-
-  const importGrid = () => {
-    navigator.clipboard.readText().then((text) => {
-      const grid = decodeGrid(text)
-      if (grid) dispatch(setGrid(grid))
-    })
-  }
-
   const exportGrid = () => {
     const gridString = encodeGrid(grid)
     const url = new URL(window.location.href)
@@ -164,18 +153,7 @@ const Controls: FC = () => {
       <ControlsDiv data-tag="undo">
         <Btn onClick={() => dispatch(UndoActionCreators.undo())}>Undo</Btn>
         <Btn onClick={() => dispatch(UndoActionCreators.redo())}>Redo</Btn>
-        <Btn
-          style={{ display: clipboardIsAvailable() ? 'block' : 'none' }}
-          onClick={() => importGrid()}
-        >
-          Import
-        </Btn>
-        <Btn
-          style={{ display: clipboardIsAvailable() ? 'block' : 'none' }}
-          onClick={() => exportGrid()}
-        >
-          Export
-        </Btn>
+        <Btn onClick={() => exportGrid()}>Export</Btn>
         {exportedGrid && (
           <ControlsDiv>
             <a href={exportedGrid}>{exportedGrid}</a>

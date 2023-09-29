@@ -135,7 +135,7 @@ interface CellProps {
 const Cell: FC<CellProps> = ({ colIndex, rowIndex }) => {
   const selector = createSelector(
     (state: IReducer) =>
-      state.grid ? state.grid[colIndex][rowIndex] : undefined,
+      state.present.grid ? state.present.grid[colIndex][rowIndex] : undefined,
     (cell) => ({ cell })
   )
   const { cell } = useSelector(selector)

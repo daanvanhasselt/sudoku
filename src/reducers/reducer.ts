@@ -1,4 +1,5 @@
 import { AnyAction } from 'redux'
+import undoable, { includeAction } from 'redux-undo'
 import { IReducer } from './interfaces'
 import * as types from './types'
 import {
@@ -122,4 +123,7 @@ function reducer(state = initialState, action: AnyAction) {
   }
 }
 
-export default reducer
+const undoableReducer = undoable(reducer, {
+  filter: includeAction(types.SET_VALUE),
+})
+export default undoableReducer

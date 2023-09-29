@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { setValue, setMode, selectNumber, setSelectionMode } from 'reducers'
 import { N } from 'typings'
 import { IReducer } from 'reducers'
+import { ActionCreators as UndoActionCreators } from 'redux-undo'
 
 import styled, { css } from 'styled-components'
 
@@ -55,7 +56,7 @@ const ControlsDiv = styled.div<{ $highlight?: N }>`
 const Controls: FC = () => {
   const dispatch = useDispatch()
   // get mode from state
-  const selector = (state: IReducer) => state.mode
+  const selector = (state: IReducer) => state.present.mode
   const mode = useSelector(selector)
 
   const fill = (n?: N) => dispatch(setValue(n))
@@ -116,6 +117,10 @@ const Controls: FC = () => {
         >
           Color
         </Btn>
+      </ControlsDiv>
+      <ControlsDiv data-tag="undo">
+        <Btn onClick={() => dispatch(UndoActionCreators.undo())}>Undo</Btn>
+        <Btn onClick={() => dispatch(UndoActionCreators.redo())}>Redo</Btn>
       </ControlsDiv>
     </>
   )

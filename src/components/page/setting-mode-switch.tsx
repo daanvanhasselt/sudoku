@@ -29,7 +29,7 @@ const SettingModeSwitchButton = styled.button`
 const SettingModeSwitch: FC = () => {
   const dispatch = useDispatch()
 
-  const selector = (state: IReducer) => state.settingMode
+  const selector = (state: IReducer) => state.present.settingMode
   const settingMode = useSelector(selector)
 
   const toggle = () => dispatch(toggleSettingMode())

@@ -354,6 +354,13 @@ function decodeGrid(encoded?: string) {
   return grid
 }
 
+function isCompleted(grid?: GRID) {
+  if (!grid) return false
+  return grid.every((col) =>
+    col.every((cell) => cell.value !== undefined && !cell.illegal)
+  )
+}
+
 export {
   createEmptyGrid,
   tickleCell,
@@ -372,4 +379,5 @@ export {
   selectAnyKindOfNumber,
   encodeGrid,
   decodeGrid,
+  isCompleted,
 }

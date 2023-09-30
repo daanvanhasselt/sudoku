@@ -1,5 +1,6 @@
-import { ReactNode, FC, useEffect } from 'react'
-import { useDispatch } from 'react-redux'
+import { ReactNode, FC, useEffect, useState } from 'react'
+import { useDispatch, useSelector } from 'react-redux'
+import { IReducer } from 'reducers'
 import {
   selectAll,
   clearSelection,
@@ -10,6 +11,9 @@ import {
 } from 'reducers'
 import { N } from 'typings'
 import { ActionCreators as UndoActionCreators } from 'redux-undo'
+
+import ConfettiExplosion from 'react-confetti-explosion'
+import { isCompleted } from 'utils'
 
 import styled, { css } from 'styled-components'
 
@@ -28,6 +32,15 @@ interface Props {
 
 const Wrapper: FC<Props> = ({ children }) => {
   const dispatch = useDispatch()
+
+  const grid = useSelector((state: IReducer) => state.present.grid)
+  useEffect(() => {
+    console.log('grid changed')
+    // if grid is solved, set confetti to true
+    setConfetti(isCompleted(grid))
+  }, [grid])
+
+  const [confetti, setConfetti] = useState(true)
 
   // useeffect to add event listeners to root
   useEffect(() => {
@@ -101,7 +114,21 @@ const Wrapper: FC<Props> = ({ children }) => {
     }
   }, [dispatch])
 
-  return <WrapperDiv data-tag="wrapper">{children}</WrapperDiv>
+  return (
+    <>
+      <WrapperDiv data-tag="wrapper">
+        {confetti && (
+          <ConfettiExplosion
+            force={0.1}
+            duration={2000}
+            particleCount={100}
+            particleSize={25}
+          />
+        )}
+        {children}
+      </WrapperDiv>
+    </>
+  )
 }
 
 export default Wrapper

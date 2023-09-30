@@ -90,7 +90,7 @@ const Controls: FC = () => {
       const grid = decodeGrid(data)
       if (grid) dispatch(setGrid(grid))
     }
-  }, [])
+  }, [dispatch])
 
   const exportGrid = () => {
     const gridString = encodeGrid(grid)

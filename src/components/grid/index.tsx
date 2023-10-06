@@ -1,10 +1,7 @@
-import React, { FC, Children, useEffect, useCallback } from 'react'
-import { useDispatch } from 'react-redux'
-import { AnyAction, Dispatch } from 'redux'
+import React, { FC, Children } from 'react'
 import { Row } from './row'
 import Cell from './cell'
 import { Container } from './container'
-import { createGrid } from 'reducers'
 import Xarrow from 'react-xarrows'
 
 export const Grid: FC = () => {

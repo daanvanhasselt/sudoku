@@ -129,6 +129,7 @@ function reducer(state = initialState, action: AnyAction) {
 }
 
 const undoableReducer = undoable(reducer, {
+  limit: 1000,
   filter: includeAction([
     types.CREATE_GRID,
     types.SET_GRID,

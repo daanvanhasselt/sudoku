@@ -1,4 +1,5 @@
 export const CREATE_GRID = 'CREATE_GRID'
+export const SOFT_RESET = 'SOFT_RESET'
 export const SET_GRID = 'SET_GRID'
 export const SET_SELECTION_MODE = 'SET_SELECTION_MODE'
 export const CLEAR_SELECTION = 'CLEAR_SELECTION'

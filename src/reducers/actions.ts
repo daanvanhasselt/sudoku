@@ -6,6 +6,10 @@ export const createGrid = (): Action => {
   return { type: types.CREATE_GRID }
 }
 
+export const softReset = (): Action => {
+  return { type: types.SOFT_RESET }
+}
+
 export const setGrid = (grid?: GRID): AnyAction => {
   return { type: types.SET_GRID, grid }
 }

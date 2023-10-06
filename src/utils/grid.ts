@@ -15,6 +15,29 @@ function createEmptyGrid(): GRID {
   return grid
 }
 
+function softReset(grid?: GRID): GRID | undefined {
+  if (!grid) return createEmptyGrid()
+
+  return update(grid, {
+    $set: grid.map((col) =>
+      col.map((cell) =>
+        cell.isInitial
+          ? cell
+          : {
+              ...cell,
+              value: undefined,
+              cornerValues: undefined,
+              centerValues: undefined,
+              highlight: undefined,
+              isSelected: false,
+              isInitial: false,
+              illegal: false,
+            }
+      )
+    ) as GRID,
+  })
+}
+
 interface IInput {
   grid: GRID
   coords: COORDS
@@ -363,6 +386,7 @@ function isCompleted(grid?: GRID) {
 
 export {
   createEmptyGrid,
+  softReset,
   tickleCell,
   setValueToSelectedCells,
   clearSelection,

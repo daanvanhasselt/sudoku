@@ -4,6 +4,7 @@ import { IReducer } from './interfaces'
 import * as types from './types'
 import {
   createEmptyGrid,
+  softReset,
   tickleCell,
   clearSelection,
   selectAll,
@@ -29,6 +30,11 @@ function reducer(state = initialState, action: AnyAction) {
       return {
         ...state,
         grid: createEmptyGrid(),
+      }
+    case types.SOFT_RESET:
+      return {
+        ...state,
+        grid: softReset(state.grid),
       }
     case types.SET_GRID:
       return {
@@ -129,9 +135,10 @@ function reducer(state = initialState, action: AnyAction) {
 }
 
 const undoableReducer = undoable(reducer, {
-  limit: 1000,
+  limit: 500,
   filter: includeAction([
     types.CREATE_GRID,
+    types.SOFT_RESET,
     types.SET_GRID,
     types.SET_MODE,
     types.SET_VALUE,

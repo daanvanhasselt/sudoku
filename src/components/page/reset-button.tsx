@@ -1,11 +1,22 @@
 import { FC } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { createGrid } from 'reducers'
+import { createGrid, softReset } from 'reducers'
 import { Icon } from 'react-icons-kit'
-import { ic_delete } from 'react-icons-kit/md'
+import { ic_delete, ic_replay } from 'react-icons-kit/md'
 import { IReducer } from 'reducers'
 
 import styled, { css } from 'styled-components'
+
+const Container = styled.div`
+  ${({ theme }) => css`
+    position: fixed;
+    right: 50px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+  `}
+`
 
 const ResetBtn = styled.button`
   ${({ theme }) => css`
@@ -22,24 +33,30 @@ const ResetBtn = styled.button`
     padding: 0;
     cursor: pointer;
     outline: none;
-    position: fixed;
-    right: 50px;
   `}
 `
 
 const ResetButton: FC = () => {
   const dispatch = useDispatch()
-  const reset = () => {
-    // confirm
-    if (window.confirm('Are you sure you want to reset the game?') === false)
-      return
+  const handleResetClick = () => {
     dispatch(createGrid())
   }
 
+  const handleSoftResetClick = () => {
+    dispatch(softReset())
+  }
+
   return (
-    <ResetBtn onClick={reset}>
-      <Icon icon={ic_delete} />
-    </ResetBtn>
+    <>
+      <Container>
+        <ResetBtn onClick={handleSoftResetClick}>
+          <Icon icon={ic_replay} />
+        </ResetBtn>
+        <ResetBtn onClick={handleResetClick}>
+          <Icon icon={ic_delete} />
+        </ResetBtn>
+      </Container>
+    </>
   )
 }
 

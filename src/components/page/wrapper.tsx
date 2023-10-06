@@ -35,12 +35,11 @@ const Wrapper: FC<Props> = ({ children }) => {
 
   const grid = useSelector((state: IReducer) => state.present.grid)
   useEffect(() => {
-    console.log('grid changed')
     // if grid is solved, set confetti to true
     setConfetti(isCompleted(grid))
   }, [grid])
 
-  const [confetti, setConfetti] = useState(true)
+  const [confetti, setConfetti] = useState(false)
 
   // useeffect to add event listeners to root
   useEffect(() => {

@@ -85,12 +85,8 @@ const ControlsDiv = styled.div<{ $highlight?: N }>`
 
     &[data-tag='advanced'] {
       flex-direction: column;
-      gap: 6px;
-      max-width: 320px;
-
-      button {
-        width: 100%;
-      }
+      gap: 12px;
+      max-width: 360px;
 
       p {
         margin: 0;
@@ -105,6 +101,17 @@ const ControlsDiv = styled.div<{ $highlight?: N }>`
       user-select: text;
     }
   `}
+`
+
+const AdvancedButtonsRow = styled.div`
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+
+  button {
+    flex: 1;
+    min-width: 150px;
+  }
 `
 
 const Controls: FC = () => {
@@ -122,6 +129,7 @@ const Controls: FC = () => {
   const longPressTriggeredRef = useRef<boolean>(false)
   const suppressClickRef = useRef<boolean>(false)
   const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const cameraInputRef = useRef<HTMLInputElement | null>(null)
   const requestControllerRef = useRef<AbortController | null>(null)
 
   const [openAiKey, setOpenAiKey] = useState<string>(getStoredOpenAIApiKey())
@@ -269,6 +277,16 @@ const Controls: FC = () => {
     fileInputRef.current?.click()
   }
 
+  const handleTakePhotoClick = () => {
+    const apiKey = getStoredOpenAIApiKey()
+    if (!apiKey) {
+      handleConfigureOpenAiKey()
+      return
+    }
+
+    cameraInputRef.current?.click()
+  }
+
   // load #data from url
   useEffect(() => {
     const url = new URL(window.location.href)
@@ -338,13 +356,22 @@ const Controls: FC = () => {
         </Btn>
       </ControlsDiv>
       <ControlsDiv data-tag="advanced">
-        <Btn
-          $small={true}
-          onClick={handleLoadFromImageClick}
-          disabled={isLoadingFromImage}
-        >
-          {isLoadingFromImage ? 'Loading…' : 'Load from image'}
-        </Btn>
+        <AdvancedButtonsRow>
+          <Btn
+            $small={true}
+            onClick={handleLoadFromImageClick}
+            disabled={isLoadingFromImage}
+          >
+            {isLoadingFromImage ? 'Loading…' : 'Load image'}
+          </Btn>
+          <Btn
+            $small={true}
+            onClick={handleTakePhotoClick}
+            disabled={isLoadingFromImage}
+          >
+            {isLoadingFromImage ? 'Loading…' : 'Take photo'}
+          </Btn>
+        </AdvancedButtonsRow>
         <Btn $small={true} onClick={handleConfigureOpenAiKey}>
           {openAiKey ? 'Update OpenAI key' : 'Set OpenAI key'}
         </Btn>
@@ -355,6 +382,14 @@ const Controls: FC = () => {
           type="file"
           accept="image/*"
           ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileSelection}
+        />
+        <input
+          type="file"
+          accept="image/*"
+          capture="environment"
+          ref={cameraInputRef}
           style={{ display: 'none' }}
           onChange={handleFileSelection}
         />

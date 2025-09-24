@@ -15,6 +15,7 @@ import {
   Controls,
   SettingModeSwitch,
   ResetButton,
+  UndoButtons,
 } from 'components'
 
 const { persistor, store } = configureStore({})
@@ -28,6 +29,7 @@ root.render(
         <PersistGate loading={null} persistor={persistor} />
         <Wrapper data-tag="wrapper">
           <Header data-tag="header">
+            <UndoButtons />
             <Title>
               <ResetButton />
               Sudoku

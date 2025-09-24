@@ -1,36 +1,46 @@
-import { FC, useEffect, useState } from 'react'
+import {
+  FC,
+  MouseEvent as ReactMouseEvent,
+  PointerEvent as ReactPointerEvent,
+  useEffect,
+  useRef,
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValue, setMode, selectNumber, setGrid } from 'reducers'
 import { N } from 'typings'
 import { IReducer } from 'reducers'
-import { ActionCreators as UndoActionCreators } from 'redux-undo'
-import { encodeGrid, decodeGrid } from 'utils'
+import { decodeGrid } from 'utils'
 
 import styled, { css } from 'styled-components'
 
 const Btn = styled.button<{
   $highlight?: N
-  $select?: Boolean
   $small?: Boolean
 }>`
-  ${({ $highlight, $select, theme }) => css`
-    min-width: 44px;
-    height: 44px;
+  ${({ $highlight, $small, theme }) => css`
+    min-width: ${$small ? 'auto' : '44px'};
+    height: ${$small ? '36px' : '44px'};
     border-radius: 10px;
     background-color: ${$highlight !== undefined &&
     theme.colors.highlights[$highlight] !== undefined
       ? theme.colors.highlights[$highlight]
       : theme.colors.white};
-    font-size: 1.5em;
+    font-size: ${$small ? '1em' : '1.5em'};
     color: ${$highlight ? theme.colors.transparent : theme.colors.black};
 
-    flex-grow: 1;
+    flex-grow: ${$small ? 0 : 1};
     flex-shrink: 1;
+    padding: ${$small ? '0 12px' : '0'};
 
     @media (max-width: 500px) {
-      flex-basis: 33%;
-      flex-grow: 0;
-      flex-shrink: 0;
+      ${
+        !$small &&
+        css`
+          flex-basis: 33%;
+          flex-grow: 0;
+          flex-shrink: 0;
+        `
+      }
     }
 
     &.active {
@@ -40,8 +50,6 @@ const Btn = styled.button<{
     &:active {
       background: ${theme.colors.grid.cell.selected};
     }
-
-    border: ${$select ? '2px dashed #000' : ''};
   `}
 `
 
@@ -57,6 +65,11 @@ const ControlsDiv = styled.div<{ $highlight?: N }>`
     margin-top: 10px;
     width: 100%;
 
+    &[data-tag='mode'] {
+      flex-wrap: nowrap;
+      gap: 8px;
+    }
+
     a,
     p {
       color: ${theme.colors.lightBlue};
@@ -71,16 +84,75 @@ const Controls: FC = () => {
   // get mode from state
   const modeSelector = (state: IReducer) => state.present.mode
   const mode = useSelector(modeSelector)
-  const gridSelector = (state: IReducer) => state.present.grid
-  const grid = useSelector(gridSelector)
 
   const fill = (n?: N) => dispatch(setValue(n))
   const select = (n?: N) => dispatch(selectNumber(n))
 
-  const [exportedGrid, setExportedGrid] = useState<string>('' as string)
-  const [exportedSudokuWiki, setExportedSudokuWiki] = useState<string>(
-    '' as string
+  const longPressTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(
+    null
   )
+  const longPressTriggeredRef = useRef<boolean>(false)
+  const suppressClickRef = useRef<boolean>(false)
+
+  const clearLongPressTimeout = () => {
+    if (longPressTimeoutRef.current) {
+      clearTimeout(longPressTimeoutRef.current)
+      longPressTimeoutRef.current = null
+    }
+  }
+
+  const startLongPressTimer = (value?: N) => {
+    clearLongPressTimeout()
+    longPressTriggeredRef.current = false
+    longPressTimeoutRef.current = setTimeout(() => {
+      longPressTriggeredRef.current = true
+      longPressTimeoutRef.current = null
+      select(value)
+    }, 500)
+  }
+
+  const handlePointerDown = (value?: N) => (
+    event: ReactPointerEvent<HTMLButtonElement>
+  ) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) {
+      return
+    }
+    suppressClickRef.current = false
+    startLongPressTimer(value)
+  }
+
+  const handlePointerUp = (value?: N) => (
+    event: ReactPointerEvent<HTMLButtonElement>
+  ) => {
+    if (event.pointerType === 'mouse' && event.button !== 0) {
+      return
+    }
+    const wasLongPress = longPressTriggeredRef.current
+    clearLongPressTimeout()
+    suppressClickRef.current = true
+    if (!wasLongPress) {
+      fill(value)
+    }
+  }
+
+  const handlePointerLeave = () => {
+    clearLongPressTimeout()
+    longPressTriggeredRef.current = false
+  }
+
+  const handleClick = (value?: N) => (
+    event: ReactMouseEvent<HTMLButtonElement>
+  ) => {
+    if (suppressClickRef.current) {
+      suppressClickRef.current = false
+      return
+    }
+    fill(value)
+  }
+
+  const handleContextMenu = (event: ReactMouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+  }
 
   // load #data from url
   useEffect(() => {
@@ -92,60 +164,31 @@ const Controls: FC = () => {
     }
   }, [dispatch])
 
-  const exportGrid = () => {
-    const gridString = encodeGrid(grid)
-    const url = new URL(window.location.href)
-    url.searchParams.set('data', gridString)
-    setExportedGrid(url.toString())
-
-    // navigator.clipboard.writeText(gridString)
-    // alert the user
-    // alert('Copied to clipboard!')
-  }
-
-  const exportSudokuWiki = () => {
-    // take each value in the grid and append them as a string
-    // use _ for empty cells
-    let gridString = ''
-    for (let i = 0; i < 9; i++) {
-      let row = ''
-      for (let j = 0; j < 9; j++) {
-        const cell = grid?.[j]?.[i]
-        row += cell?.value || '_'
-      }
-      gridString += row
-    }
-
-    setExportedSudokuWiki(gridString || '')
-  }
-
   return (
     <>
       <ControlsDiv data-tag="controls">
         {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
           <Btn
             key={n}
-            onClick={() => fill(n as N)}
+            onPointerDown={handlePointerDown(n as N)}
+            onPointerUp={handlePointerUp(n as N)}
+            onPointerLeave={handlePointerLeave}
+            onPointerCancel={handlePointerLeave}
+            onClick={handleClick(n as N)}
+            onContextMenu={handleContextMenu}
             $highlight={mode === 'highlight' ? (n as N) : undefined}
           >
             {mode === 'highlight' ? '..' : n}
           </Btn>
         ))}
-        <Btn onClick={() => fill(undefined)}> </Btn>
-      </ControlsDiv>
-      <ControlsDiv data-tag="select">
-        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => (
-          <Btn
-            key={n}
-            onClick={(event: React.MouseEvent) => {
-              select(n as N)
-            }}
-            $select={true}
-          >
-            {n}
-          </Btn>
-        ))}
-        <Btn $select={true} onClick={() => select(undefined)}>
+        <Btn
+          onPointerDown={handlePointerDown(undefined)}
+          onPointerUp={handlePointerUp(undefined)}
+          onPointerLeave={handlePointerLeave}
+          onPointerCancel={handlePointerLeave}
+          onClick={handleClick(undefined)}
+          onContextMenu={handleContextMenu}
+        >
           {' '}
         </Btn>
       </ControlsDiv>
@@ -153,48 +196,31 @@ const Controls: FC = () => {
         <Btn
           className={mode === 'normal' ? 'active' : ''}
           onClick={() => dispatch(setMode('normal'))}
+          $small={true}
         >
           Normal
         </Btn>
         <Btn
           className={mode === 'corner' ? 'active' : ''}
           onClick={() => dispatch(setMode('corner'))}
+          $small={true}
         >
           Corner
         </Btn>
         <Btn
           className={mode === 'center' ? 'active' : ''}
           onClick={() => dispatch(setMode('center'))}
+          $small={true}
         >
           Center
         </Btn>
         <Btn
           className={mode === 'highlight' ? 'active' : ''}
           onClick={() => dispatch(setMode('highlight'))}
+          $small={true}
         >
           Color
         </Btn>
-      </ControlsDiv>
-      <ControlsDiv data-tag="undo">
-        <Btn onClick={() => dispatch(UndoActionCreators.undo())}>Undo</Btn>
-        <Btn onClick={() => dispatch(UndoActionCreators.redo())}>Redo</Btn>
-        <Btn $small={true} onClick={() => exportGrid()}>
-          Export
-        </Btn>
-        {exportedGrid && (
-          <ControlsDiv>
-            <a href={exportedGrid}>{exportedGrid}</a>
-          </ControlsDiv>
-        )}
-        <Btn $small={true} onClick={() => exportSudokuWiki()}>
-          Export SudokuWiki
-        </Btn>
-
-        {exportedSudokuWiki && (
-          <ControlsDiv>
-            <p>{exportedSudokuWiki}</p>
-          </ControlsDiv>
-        )}
       </ControlsDiv>
     </>
   )

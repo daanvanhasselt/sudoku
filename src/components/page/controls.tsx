@@ -1,15 +1,23 @@
 import {
+  ChangeEvent as ReactChangeEvent,
   FC,
   MouseEvent as ReactMouseEvent,
   PointerEvent as ReactPointerEvent,
   useEffect,
   useRef,
+  useState,
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { setValue, setMode, selectNumber, setGrid } from 'reducers'
 import { N } from 'typings'
 import { IReducer } from 'reducers'
-import { decodeGrid } from 'utils'
+import {
+  decodeGrid,
+  getStoredOpenAIApiKey,
+  setStoredOpenAIApiKey,
+  clearStoredOpenAIApiKey,
+  requestSudokuGridFromImage,
+} from 'utils'
 
 import styled, { css } from 'styled-components'
 
@@ -50,6 +58,11 @@ const Btn = styled.button<{
     &:active {
       background: ${theme.colors.grid.cell.selected};
     }
+
+    &:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
   `}
 `
 
@@ -68,6 +81,21 @@ const ControlsDiv = styled.div<{ $highlight?: N }>`
     &[data-tag='mode'] {
       flex-wrap: nowrap;
       gap: 8px;
+    }
+
+    &[data-tag='advanced'] {
+      flex-direction: column;
+      gap: 6px;
+      max-width: 320px;
+
+      button {
+        width: 100%;
+      }
+
+      p {
+        margin: 0;
+        text-align: center;
+      }
     }
 
     a,
@@ -93,6 +121,13 @@ const Controls: FC = () => {
   )
   const longPressTriggeredRef = useRef<boolean>(false)
   const suppressClickRef = useRef<boolean>(false)
+  const fileInputRef = useRef<HTMLInputElement | null>(null)
+  const requestControllerRef = useRef<AbortController | null>(null)
+
+  const [openAiKey, setOpenAiKey] = useState<string>(getStoredOpenAIApiKey())
+  const [loadStatus, setLoadStatus] = useState<string>('')
+  const [loadError, setLoadError] = useState<string>('')
+  const [isLoadingFromImage, setIsLoadingFromImage] = useState<boolean>(false)
 
   const clearLongPressTimeout = () => {
     if (longPressTimeoutRef.current) {
@@ -152,6 +187,86 @@ const Controls: FC = () => {
 
   const handleContextMenu = (event: ReactMouseEvent<HTMLButtonElement>) => {
     event.preventDefault()
+  }
+
+  const readFileAsDataUrl = (file: File): Promise<string> =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader()
+      reader.onload = () => resolve(reader.result as string)
+      reader.onerror = () => reject(new Error('Failed to read file'))
+      reader.readAsDataURL(file)
+    })
+
+  const handleConfigureOpenAiKey = () => {
+    const input = window.prompt(
+      'Enter your OpenAI API key (leave empty to remove):',
+      openAiKey
+    )
+    if (input === null) return
+    const trimmed = input.trim()
+    if (trimmed) {
+      setStoredOpenAIApiKey(trimmed)
+      setOpenAiKey(trimmed)
+      setLoadStatus('OpenAI API key saved locally.')
+      setLoadError('')
+    } else {
+      clearStoredOpenAIApiKey()
+      setOpenAiKey('')
+      setLoadStatus('OpenAI API key removed.')
+      setLoadError('')
+    }
+  }
+
+  const handleFileSelection = async (
+    event: ReactChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file) return
+
+    const apiKey = getStoredOpenAIApiKey()
+    if (!apiKey) {
+      setLoadError('Please configure your OpenAI API key first.')
+      return
+    }
+
+    setIsLoadingFromImage(true)
+    setLoadStatus('Uploading image to OpenAI...')
+    setLoadError('')
+
+    try {
+      const dataUrl = await readFileAsDataUrl(file)
+      const controller = new AbortController()
+      requestControllerRef.current = controller
+      const grid = await requestSudokuGridFromImage({
+        apiKey,
+        dataUrl,
+        signal: controller.signal,
+      })
+      dispatch(setGrid(grid))
+      setLoadStatus('Loaded Sudoku from image successfully.')
+    } catch (error) {
+      if ((error as Error).name === 'AbortError') {
+        setLoadStatus('Image upload cancelled.')
+      } else {
+        console.error('Failed to load Sudoku from image', error)
+        setLoadError((error as Error).message || 'Failed to load from image.')
+        setLoadStatus('')
+      }
+    } finally {
+      setIsLoadingFromImage(false)
+      requestControllerRef.current = null
+    }
+  }
+
+  const handleLoadFromImageClick = () => {
+    const apiKey = getStoredOpenAIApiKey()
+    if (!apiKey) {
+      handleConfigureOpenAiKey()
+      return
+    }
+
+    fileInputRef.current?.click()
   }
 
   // load #data from url
@@ -221,6 +336,28 @@ const Controls: FC = () => {
         >
           Color
         </Btn>
+      </ControlsDiv>
+      <ControlsDiv data-tag="advanced">
+        <Btn
+          $small={true}
+          onClick={handleLoadFromImageClick}
+          disabled={isLoadingFromImage}
+        >
+          {isLoadingFromImage ? 'Loading…' : 'Load from image'}
+        </Btn>
+        <Btn $small={true} onClick={handleConfigureOpenAiKey}>
+          {openAiKey ? 'Update OpenAI key' : 'Set OpenAI key'}
+        </Btn>
+        {(loadStatus || loadError) && (
+          <p>{loadError ? `Error: ${loadError}` : loadStatus}</p>
+        )}
+        <input
+          type="file"
+          accept="image/*"
+          ref={fileInputRef}
+          style={{ display: 'none' }}
+          onChange={handleFileSelection}
+        />
       </ControlsDiv>
     </>
   )

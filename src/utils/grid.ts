@@ -15,6 +15,37 @@ function createEmptyGrid(): GRID {
   return grid
 }
 
+function createGridFromDigits(digits: number[][]): GRID {
+  if (!Array.isArray(digits) || digits.length !== 9) {
+    throw new Error('Expected 9 rows of digits')
+  }
+
+  const baseGrid = createEmptyGrid()
+
+  return baseGrid.map((column, colIndex) =>
+    column.map((cell, rowIndex) => {
+      const row = digits[rowIndex]
+      if (!Array.isArray(row) || row.length !== 9) {
+        throw new Error('Each row must contain 9 digits')
+      }
+
+      const rawValue = row[colIndex]
+      const isDigit =
+        typeof rawValue === 'number' && rawValue >= 1 && rawValue <= 9
+
+      return {
+        ...cell,
+        value: isDigit ? (Math.trunc(rawValue) as N) : undefined,
+        isInitial: isDigit,
+        cornerValues: undefined,
+        centerValues: undefined,
+        highlight: undefined,
+        illegal: false,
+      }
+    }) as ROW
+  ) as GRID
+}
+
 function softReset(grid?: GRID): GRID | undefined {
   if (!grid) return createEmptyGrid()
 
@@ -404,4 +435,5 @@ export {
   encodeGrid,
   decodeGrid,
   isCompleted,
+  createGridFromDigits,
 }

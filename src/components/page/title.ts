@@ -13,5 +13,7 @@ export const Title = styled.h1`
     letter-spacing: 0.15em;
     text-transform: uppercase;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   `}
 `

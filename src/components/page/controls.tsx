@@ -26,6 +26,10 @@ const Btn = styled.button<{
   $small?: Boolean
 }>`
   ${({ $highlight, $small, theme }) => css`
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
     min-width: ${$small ? 'auto' : '44px'};
     height: ${$small ? '36px' : '44px'};
     border-radius: 10px;
@@ -69,6 +73,8 @@ const Btn = styled.button<{
 const ControlsDiv = styled.div<{ $highlight?: N }>`
   ${({ $highlight, theme }) => css`
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -99,6 +105,7 @@ const ControlsDiv = styled.div<{ $highlight?: N }>`
       color: ${theme.colors.lightBlue};
       font-size: 0.75em;
       user-select: text;
+      -webkit-user-select: text;
     }
   `}
 `

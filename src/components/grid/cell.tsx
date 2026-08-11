@@ -19,6 +19,8 @@ interface IProps {
 const CellDiv = styled.div<IProps>`
   ${({ selected, $highlight, theme }) => css`
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
     margin: ${theme.border.thin};
     display: flex;
     flex-wrap: wrap;

@@ -140,6 +140,8 @@ Take a look at the reducer(s) handling this action type: `+p1.type+`.
     letter-spacing: 0.15em;
     text-transform: uppercase;
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
   `}
 `,Nl=a0.div`
   ${({theme:r})=>W2`
@@ -177,6 +179,10 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   `}
 `;var a7=({children:r})=>{const a=s4(),l=f1(z=>z.present.grid);(0,V.useEffect)(()=>{s(Lr(l))},[l]);const[d,s]=(0,V.useState)(!1);return(0,V.useEffect)(()=>{const z=f=>{if(f.ctrlKey&&(f.key==="a"||f.key==="A"))return a(Br());if(f.key==="Escape")return a(si());if(f.ctrlKey&&f.key==="z")return a(M4.undo());if(f.ctrlKey&&(f.key==="Z"||f.key==="y"||f.key==="Y"))return a(M4.redo());if(f.key==="Backspace"||f.key==="Delete"?a(U4(void 0)):f.keyCode>=49&&f.keyCode<=57?a(U4(f.keyCode-48)):f.keyCode>=97&&f.keyCode<=105&&a(U4(f.keyCode-96)),f.key==="ArrowUp"){if(f.ctrlKey||f.shiftKey)return a(vt("up"));a(dt("up"))}else if(f.key==="ArrowDown"){if(f.ctrlKey||f.shiftKey)return a(vt("down"));a(dt("down"))}else if(f.key==="ArrowLeft"){if(f.ctrlKey||f.shiftKey)return a(vt("left"));a(dt("left"))}else if(f.key==="ArrowRight"){if(f.ctrlKey||f.shiftKey)return a(vt("right"));a(dt("right"))}if(f.key==="z")return a(S0("normal"));if(f.key==="x")return a(S0("corner"));if(f.key==="c")return a(S0("center"));if(f.key==="v")return a(S0("highlight"));if(f.key==="b")return a(S0("lines"))},p=f=>{if(f.target instanceof HTMLDivElement&&(f.target.dataset.tag==="wrapper"||f.target.dataset.tag==="card"||f.target.id==="root"))return a(si())},b=document.getElementById("root");return b.addEventListener("keydown",z),b.addEventListener("click",p),()=>{b.removeEventListener("keydown",z),b.removeEventListener("click",p)}},[a]),(0,C.jsx)(C.Fragment,{children:(0,C.jsxs)(c7,{"data-tag":"wrapper",children:[d&&(0,C.jsx)(h7,{force:.1,duration:2e3,particleCount:100,particleSize:25}),r]})})},l7=(r,a,l)=>new Promise((d,s)=>{var z=f=>{try{b(l.next(f))}catch(H){s(H)}},p=f=>{try{b(l.throw(f))}catch(H){s(H)}},b=f=>f.done?d(f.value):Promise.resolve(f.value).then(z,p);b((l=l.apply(r,a)).next())});const A5=a0.button`
   ${({$highlight:r,$small:a,theme:l})=>W2`
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
+    touch-action: manipulation;
     min-width: ${a?"auto":"44px"};
     height: ${a?"36px":"44px"};
     border-radius: 10px;
@@ -212,6 +218,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 `,ba=a0.div`
   ${({$highlight:r,theme:a})=>W2`
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
@@ -242,6 +250,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
       color: ${a.colors.lightBlue};
       font-size: 0.75em;
       user-select: text;
+      -webkit-user-select: text;
     }
   `}
 `,d7=a0.div`
@@ -347,6 +356,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 `;var yh="NOT_FOUND";function f7(r){var a;return{get:function(d){return a&&r(a.key,d)?a.value:yh},put:function(d,s){a={key:d,value:s}},getEntries:function(){return a?[a]:[]},clear:function(){a=void 0}}}function V7(r,a){var l=[];function d(b){var f=l.findIndex(function(_){return a(b,_.key)});if(f>-1){var H=l[f];return f>0&&(l.splice(f,1),l.unshift(H)),H.value}return yh}function s(b,f){d(b)===yh&&(l.unshift({key:b,value:f}),l.length>r&&l.pop())}function z(){return l}function p(){l=[]}return{get:d,put:s,getEntries:z,clear:p}}var _7=function(a,l){return a===l};function w7(r){return function(l,d){if(l===null||d===null||l.length!==d.length)return!1;for(var s=l.length,z=0;z<s;z++)if(!r(l[z],d[z]))return!1;return!0}}function C7(r,a){var l=typeof a=="object"?a:{equalityCheck:a},d=l.equalityCheck,s=d===void 0?_7:d,z=l.maxSize,p=z===void 0?1:z,b=l.resultEqualityCheck,f=w7(s),H=p===1?f7(f):V7(p,f);function _(){var g=H.get(arguments);if(g===yh){if(g=r.apply(null,arguments),b){var S=H.getEntries(),A=S.find(function(B){return b(B.value,g)});A&&(g=A.value)}H.put(arguments,g)}return g}return _.clearCache=function(){return H.clear()},_}function g7(r){var a=Array.isArray(r[0])?r[0]:r;if(!a.every(function(d){return typeof d=="function"})){var l=a.map(function(d){return typeof d=="function"?"function "+(d.name||"unnamed")+"()":typeof d}).join(", ");throw new Error("createSelector expects all input-selectors to be functions, but received the following types: ["+l+"]")}return a}function L7(r){for(var a=arguments.length,l=new Array(a>1?a-1:0),d=1;d<a;d++)l[d-1]=arguments[d];var s=function(){for(var p=arguments.length,b=new Array(p),f=0;f<p;f++)b[f]=arguments[f];var H=0,_,g={memoizeOptions:void 0},S=b.pop();if(typeof S=="object"&&(g=S,S=b.pop()),typeof S!="function")throw new Error("createSelector expects an output function after the inputs, but received: ["+typeof S+"]");var A=g,B=A.memoizeOptions,E=B===void 0?l:B,j=Array.isArray(E)?E:[E],I=g7(b),N=r.apply(void 0,[function(){return H++,S.apply(null,arguments)}].concat(j)),K=r(function(){for(var p1=[],M1=I.length,H1=0;H1<M1;H1++)p1.push(I[H1].apply(null,arguments));return _=N.apply(null,p1),_});return Object.assign(K,{resultFunc:S,memoizedResultFunc:N,dependencies:I,lastResult:function(){return _},recomputations:function(){return H},resetRecomputations:function(){return H=0}}),K};return s}var Fl=L7(C7),cd=function(a,l){if(l===void 0&&(l=Fl),typeof a!="object")throw new Error("createStructuredSelector expects first argument to be an object "+("where each property is a selector, instead received a "+typeof a));var d=Object.keys(a),s=l(d.map(function(z){return a[z]}),function(){for(var z=arguments.length,p=new Array(z),b=0;b<z;b++)p[b]=arguments[b];return p.reduce(function(f,H,_){return f[d[_]]=H,f},{})});return s};const x7=a0.div`
   ${({selected:r,$highlight:a,theme:l})=>W2`
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
     margin: ${l.border.thin};
     display: flex;
     flex-wrap: wrap;
@@ -454,6 +465,8 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
     flex: 1;
     background-color: ${({theme:a})=>a.colors.black};
     user-select: none;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
     touch-action: none;
 
     > :nth-child(3n) {
@@ -472,4 +485,4 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
   `}
 `,S7=()=>(0,C.jsx)(B7,{"data-tag":"grid-container",children:V.Children.toArray([...Array(9)].map((r,a)=>(0,C.jsx)(H7,{"data-tag":"grid-row",children:V.Children.toArray([...Array(9)].map((l,d)=>(0,C.jsx)(y7,{"data-tag":"grid-cell",colIndex:d,rowIndex:a})))})))}),{persistor:E7,store:A7}=Fr({});i.createRoot(document.getElementById("root")).render((0,C.jsx)(V.StrictMode,{children:(0,C.jsxs)(B1,{theme:Rl,children:[(0,C.jsx)(Ol,{}),(0,C.jsxs)(o2,{store:A7,children:[(0,C.jsx)(gt,{loading:null,persistor:E7}),(0,C.jsxs)(a7,{"data-tag":"wrapper",children:[(0,C.jsxs)(jl,{"data-tag":"header",children:[(0,C.jsx)(b7,{}),(0,C.jsxs)(Il,{children:[(0,C.jsx)(z7,{}),"Sudoku",(0,C.jsx)(o7,{})]})]}),(0,C.jsx)(Tl,{"data-tag":"content",children:(0,C.jsx)(Nl,{"data-tag":"card",children:(0,C.jsx)(S7,{})})}),(0,C.jsx)(v7,{})]})]})]})})),Yn()})()})();
 
-//# sourceMappingURL=main.d34cc9ca.js.map
+//# sourceMappingURL=main.dee8738a.js.map

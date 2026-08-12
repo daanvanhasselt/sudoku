@@ -7,7 +7,9 @@ module.exports = {
       plugin: CracoEsbuildPlugin,
       options: {
         esbuildMinimizerOptions: {
-          target: 'es2015',
+          // es2018+ needed: @anthropic-ai/sdk ships async generators,
+          // which esbuild cannot transform down to es2015.
+          target: 'es2018',
           css: true, //  OptimizeCssAssetsWebpackPlugin being replaced by esbuild.
         },
       },
@@ -18,6 +20,11 @@ module.exports = {
       add: [
         new webpack.DefinePlugin({
           process: { env: {}, browser: {} },
+        }),
+        // Strip the "node:" scheme so the resolve.fallback entries below
+        // apply to node:fs / node:path / ... imports (@anthropic-ai/sdk).
+        new webpack.NormalModuleReplacementPlugin(/^node:/, (resource) => {
+          resource.request = resource.request.replace(/^node:/, '')
         }),
       ],
     },

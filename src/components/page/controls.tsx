@@ -13,9 +13,10 @@ import { N } from 'typings'
 import { IReducer } from 'reducers'
 import {
   decodeGrid,
-  getStoredOpenAIApiKey,
-  setStoredOpenAIApiKey,
-  clearStoredOpenAIApiKey,
+  countSolutions,
+  getStoredAnthropicApiKey,
+  setStoredAnthropicApiKey,
+  clearStoredAnthropicApiKey,
   requestSudokuGridFromImage,
 } from 'utils'
 
@@ -126,6 +127,7 @@ const Controls: FC = () => {
   // get mode from state
   const modeSelector = (state: IReducer) => state.present.mode
   const mode = useSelector(modeSelector)
+  const grid = useSelector((state: IReducer) => state.present.grid)
 
   const fill = (n?: N) => dispatch(setValue(n))
   const select = (n?: N) => dispatch(selectNumber(n))
@@ -139,7 +141,9 @@ const Controls: FC = () => {
   const cameraInputRef = useRef<HTMLInputElement | null>(null)
   const requestControllerRef = useRef<AbortController | null>(null)
 
-  const [openAiKey, setOpenAiKey] = useState<string>(getStoredOpenAIApiKey())
+  const [anthropicKey, setAnthropicKey] = useState<string>(
+    getStoredAnthropicApiKey()
+  )
   const [loadStatus, setLoadStatus] = useState<string>('')
   const [loadError, setLoadError] = useState<string>('')
   const [isLoadingFromImage, setIsLoadingFromImage] = useState<boolean>(false)
@@ -212,22 +216,22 @@ const Controls: FC = () => {
       reader.readAsDataURL(file)
     })
 
-  const handleConfigureOpenAiKey = () => {
+  const handleConfigureAnthropicKey = () => {
     const input = window.prompt(
-      'Enter your OpenAI API key (leave empty to remove):',
-      openAiKey
+      'Enter your Anthropic API key (leave empty to remove):',
+      anthropicKey
     )
     if (input === null) return
     const trimmed = input.trim()
     if (trimmed) {
-      setStoredOpenAIApiKey(trimmed)
-      setOpenAiKey(trimmed)
-      setLoadStatus('OpenAI API key saved locally.')
+      setStoredAnthropicApiKey(trimmed)
+      setAnthropicKey(trimmed)
+      setLoadStatus('Anthropic API key saved locally.')
       setLoadError('')
     } else {
-      clearStoredOpenAIApiKey()
-      setOpenAiKey('')
-      setLoadStatus('OpenAI API key removed.')
+      clearStoredAnthropicApiKey()
+      setAnthropicKey('')
+      setLoadStatus('Anthropic API key removed.')
       setLoadError('')
     }
   }
@@ -239,14 +243,14 @@ const Controls: FC = () => {
     event.target.value = ''
     if (!file) return
 
-    const apiKey = getStoredOpenAIApiKey()
+    const apiKey = getStoredAnthropicApiKey()
     if (!apiKey) {
-      setLoadError('Please configure your OpenAI API key first.')
+      setLoadError('Please configure your Anthropic API key first.')
       return
     }
 
     setIsLoadingFromImage(true)
-    setLoadStatus('Uploading image to OpenAI...')
+    setLoadStatus('Uploading image to Anthropic...')
     setLoadError('')
 
     try {
@@ -275,9 +279,9 @@ const Controls: FC = () => {
   }
 
   const handleLoadFromImageClick = () => {
-    const apiKey = getStoredOpenAIApiKey()
+    const apiKey = getStoredAnthropicApiKey()
     if (!apiKey) {
-      handleConfigureOpenAiKey()
+      handleConfigureAnthropicKey()
       return
     }
 
@@ -285,13 +289,25 @@ const Controls: FC = () => {
   }
 
   const handleTakePhotoClick = () => {
-    const apiKey = getStoredOpenAIApiKey()
+    const apiKey = getStoredAnthropicApiKey()
     if (!apiKey) {
-      handleConfigureOpenAiKey()
+      handleConfigureAnthropicKey()
       return
     }
 
     cameraInputRef.current?.click()
+  }
+
+  const handleCheckUniqueness = () => {
+    const solutions = countSolutions(grid)
+    setLoadError('')
+    if (solutions === 1) {
+      setLoadStatus('✓ Still exactly one solution')
+    } else if (solutions === 0) {
+      setLoadStatus('✗ No solution — a mistake was made somewhere')
+    } else {
+      setLoadStatus('⚠ Multiple solutions — puzzle is under-constrained')
+    }
   }
 
   // load #data from url
@@ -363,6 +379,9 @@ const Controls: FC = () => {
         </Btn>
       </ControlsDiv>
       <ControlsDiv data-tag="advanced">
+        <Btn $small={true} onClick={handleCheckUniqueness}>
+          Check unique solution
+        </Btn>
         <AdvancedButtonsRow>
           <Btn
             $small={true}
@@ -379,8 +398,8 @@ const Controls: FC = () => {
             {isLoadingFromImage ? 'Loading…' : 'Take photo'}
           </Btn>
         </AdvancedButtonsRow>
-        <Btn $small={true} onClick={handleConfigureOpenAiKey}>
-          {openAiKey ? 'Update OpenAI key' : 'Set OpenAI key'}
+        <Btn $small={true} onClick={handleConfigureAnthropicKey}>
+          {anthropicKey ? 'Update Anthropic key' : 'Set Anthropic key'}
         </Btn>
         {(loadStatus || loadError) && (
           <p>{loadError ? `Error: ${loadError}` : loadStatus}</p>
